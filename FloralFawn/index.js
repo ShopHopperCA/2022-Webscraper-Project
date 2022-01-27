@@ -10,10 +10,10 @@ const sample = {
     business_name: 'Floral Fawn Boutique',
     url: 'https://www.floralfawnboutique.com/product-page/sand-white-tank-top',
     place_id: '?',
-    handle: '?',
+    handle: '?', //Not required
     vendor: '?',
     tags: '?',
-    variants: '?',
+    variants: '?', //What?
     images: [
         {
             id: '?',

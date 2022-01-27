@@ -14,10 +14,11 @@ async function scrapeProductPage() {
     const $ = await cheerio.load(html);
     await sleep(1000);
 
-    const colorElement = $("#pa_color");
+    const colorElement = $("#pa_color option");
     const sizeElement = $("#pa_size option");
 
     selectScraper($, sizeElement, sizes);
+    selectScraper($, colorElement, colors);
 }
 
 async function sleep(miliseconds)
@@ -33,6 +34,7 @@ function selectScraper($, optionElement, optionArray) {
             optionArray.push(option);
         }
     });
+    console.log(optionArray);
 }
 
 

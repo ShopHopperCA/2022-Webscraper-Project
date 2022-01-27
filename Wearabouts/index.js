@@ -17,19 +17,22 @@ async function scrapeProductPage() {
     const colorElement = $("#pa_color");
     const sizeElement = $("#pa_size option");
 
-    sizeElement.each((index, element) => {
-        if(index !== 0) {
-            const size = $(element).text();
-
-            sizes.push(size);
-        }
-    });
-    console.log(sizes)
+    selectScraper($, sizeElement, sizes);
 }
 
 async function sleep(miliseconds)
 {
     return new Promise(resolve => setTimeout(resolve,miliseconds));
+}
+
+function selectScraper($, optionElement, optionArray) {
+    optionElement.each((index, element) => {
+        if(index !== 0) {
+            const option = $(element).text();
+
+            optionArray.push(option);
+        }
+    });
 }
 
 

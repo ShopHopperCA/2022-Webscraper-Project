@@ -8,18 +8,18 @@ async function scrapeMain() {
 
     const html = await request.get(url);
     const $ = await cheerio.load(html);
-
+  
     const result = $('.product').map((index,element) =>{
 
         const titleElement = $(element).find(".woocommerce-loop-product__title");
         const urlElement = $(element).find(".woocommerce-loop-product__link");
     
         const title = titleElement.text();
-        const business_name = urlElement.attr('href').split('/')[2].split(".")[0];
+        const business_name = $("title").text().split("-")[1].trim(); 
         const url = urlElement.attr('href');
         //const vendor = titleElement.text().split("W")[0];
         return{title,business_name,url};
-}).get();
+    }).get();
 
 return result;
 
@@ -43,25 +43,38 @@ async function scrapeSecondary(item_title_and_url)
         $(".posted_in").find('a').each((index,element) => 
         {
             const tag = $(element).text()
-            //console.log(element);
             tags.push(tag);
         });
         item.tags = tags;
-      
+    
         //images
-      /*$(".woocommerce-product-gallery__image").find("a").find("img").each((index,element) => 
-        {
-            const src = $(element).attr("src");
-            const width = $(element).attr("width");
-            const height = $(element).attr("height");
-          
-            item.images = {src,width,height};
-
-        });*/
+        item.images = $('.woocommerce-product-gallery__image').map((index,element) =>{
+            
+            const src = $(element).find("a").find("img").attr("src");
+            const width = $(element).find("a").find("img").attr("width");
+            const height = $(element).find("a").find("img").attr("height");
+            const position = index + 1;
+       
+            return{src,height,width,position};
+        }).get();
       
-        
+    //options
       
-        return item;
+      
+    //colors
+      
+      
+    //sizes
+      
+      
+    //updated time
+    item.updated_at = $('meta[property="article:modified_time"]').attr('content');
+      
+      
+    //price
+    item.original_price = $('div.summary.entry-summary > p > span > bdi').text().replace('$','').replace('.','');
+      
+    return item;
     })
     )
 }
@@ -79,4 +92,3 @@ async function main()
 }
 
 main();
-

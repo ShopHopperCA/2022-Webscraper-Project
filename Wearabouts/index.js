@@ -27,10 +27,19 @@ async function scrapeProductPage() {
     const sizeElement = $("#pa_size option");
     const allSelects = $("select");
 
-    data.sizes = selectScraper($, sizeElement, sizes);
-    data.colors = selectScraper($, colorElement, colors);
+
+    //data.sizes = selectScraper($, sizeElement, sizes);
+    //data.colors = selectScraper($, colorElement, colors);
     data.options = await getOptions($, allSelects);
+
+    data.options.forEach( element => {
+        if(element.name === "COLOR" || element.name === "COLORS")
+            data.colors = element.values;
+        else if(element.name === "SIZE" || element.name === "SIZES")
+            data.sizes = element.values;
+    })
 }
+
 
 //Gets all values for options data point
 async function getOptions($, selectElements) {
@@ -40,7 +49,7 @@ async function getOptions($, selectElements) {
     selectElements.each((index, element) => {
         const option = {};
 
-        option.name = $('label[for=' + $(element).attr('id') + ']').text();
+        option.name = $('label[for=' + $(element).attr('id') + ']').text().toUpperCase();
         option.values = selectScraper($, $('#' + $(element).attr('id') + ' option'));
         option.position = index + 1;
 

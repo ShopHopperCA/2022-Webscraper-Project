@@ -13,26 +13,23 @@ const options = [];
 
 //Main function where all lower functions are called
 async function main() {
-    await scrapeProductPage();
+    const html = await request.get(descriptionUrl);
+    const $ = cheerio.load(html)
+
+    await scrapeProductPage($);
     await console.log(data);
 }
 
 //Gets all data needed from the product page
-async function scrapeProductPage() {
-    const html = await request.get(descriptionUrl);
-    const $ = await cheerio.load(html);
+async function scrapeProductPage($) {
     await sleep(1000);
 
-    const colorElement = $("#pa_color option");
-    const sizeElement = $("#pa_size option");
     const allSelects = $("select");
 
+    data.options = await scrapeOptions($, allSelects);
 
-    //data.sizes = selectScraper($, sizeElement, sizes);
-    //data.colors = selectScraper($, colorElement, colors);
-    data.options = await getOptions($, allSelects);
-
-    data.options.forEach( element => {
+    //Get colors and sizes
+    data.options.forEach((element) => {
         if(element.name === "COLOR" || element.name === "COLORS" || element.name === "COLOUR" || element.name === "COLOURS")
             data.colors = element.values;
         else if(element.name === "SIZE" || element.name === "SIZES")
@@ -40,11 +37,11 @@ async function scrapeProductPage() {
     })
 }
 
+/* DATA POINT FUNCTIONS */
 
 //Gets all values for options data point
-async function getOptions($, selectElements) {
+async function scrapeOptions($, selectElements) {
     const optionArray = [];
-    //console.log(selectElements);
 
     selectElements.each((index, element) => {
         const option = {};
@@ -55,16 +52,14 @@ async function getOptions($, selectElements) {
 
         optionArray.push(option)
     });
-    //console.log(optionArray);
-    return optionArray;
     
+    return optionArray;
 }
-
 
 
 /* UTILITY FUNCTIONS */
 
-//Takes in a select element scrapes all of the values into an array
+//Takes in a select option element scrapes all of the values into an array
 function selectScraper($, selectElement) {
     selectArray = [];
 

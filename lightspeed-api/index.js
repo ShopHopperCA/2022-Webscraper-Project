@@ -6,12 +6,13 @@ const fossellos = require('./fosellos_products');
 
 
 const data = {};
-const product_titles = []
+const product_urls = []
 
 const fossellos_urls = fossellos.scrapeProductTitles();
 
 async function main() {
-    console.log(await fossellos_urls);
+    product_urls.push(await fossellos_urls)
+    await console.log(product_urls)
 }
 
 /* UTILITY FUNCTIONS */

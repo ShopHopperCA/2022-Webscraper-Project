@@ -34,8 +34,8 @@ async function scrapeProductTitles() {
         for(var j = 0; j < productListLength; j++) {
             productElement = await page$("div.products-list").children().eq(j);
             productUrl = await page$(productElement).find(".product-image-wrapper").attr('href');
-            
-            console.log(productUrl);
+            productUrl = productUrl.replace('.html', '.ajax');
+            //console.log(productUrl);
             product_urls.push(productUrl);
             
         }

@@ -28,7 +28,7 @@ async function scrapeProductPage($) {
 
     data.options = await scrapeOptions($, allSelects);
 
-    //Get colors and sizes
+    //Get colors and sizes (change to seperate function later)
     data.options.forEach((element) => {
         if(element.name === "COLOR" || element.name === "COLORS" || element.name === "COLOUR" || element.name === "COLOURS")
             data.colors = element.values;

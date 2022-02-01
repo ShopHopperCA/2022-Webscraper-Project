@@ -33,7 +33,7 @@ async function scrapeProductPage() {
     data.options = await getOptions($, allSelects);
 
     data.options.forEach( element => {
-        if(element.name === "COLOR" || element.name === "COLORS")
+        if(element.name === "COLOR" || element.name === "COLORS" || element.name === "COLOUR" || element.name === "COLOURS")
             data.colors = element.values;
         else if(element.name === "SIZE" || element.name === "SIZES")
             data.sizes = element.values;

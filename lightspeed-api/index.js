@@ -8,24 +8,26 @@ const fossellos = require('./fosellos_products');
 const data = {};
 const product_urls = []
 
-const fossellos_urls = fossellos.scrapeProductTitles();
+//const fossellos_urls = fossellos.scrapeProductTitles();
 
 async function main() {
-    product_urls.push(await fossellos_urls)
-    await console.log(product_urls)
+    //product_urls.push(await fossellos_urls)
+    //await console.log(product_urls)
 
-    fetch(product_urls[0][0], {
+    fetch('https://www.fossellos.com/cotton-linen-tank.ajax', {
         "method": "GET",
         "headers": {}
-    }).then(response => {
-        console.log(response);
+    }).then(response => response.json())
+    .then(json => {
+        console.log(json['id'])
     })
+    .catch(err => { console.error(err)})
 }
 
 /* API FUNCTIONS */
 
 async function getTitle(productJson) {
-    
+
 }
 
 async function getId(productJson) {
@@ -65,6 +67,3 @@ async function sleep(miliseconds)
 }
 
 main();
-
-
-

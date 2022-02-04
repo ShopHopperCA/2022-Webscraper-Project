@@ -35,13 +35,17 @@ async function scrapeProductTitles() {
             productElement = await page$("div.products-list").children().eq(j);
             productUrl = await page$(productElement).find(".product-image-wrapper").attr('href');
             productUrl = productUrl.replace('.html', '.ajax');
-            console.log(productUrl);
+            //console.log(productUrl);
             product_urls.push(productUrl);
             
         }
     }
 
     return product_urls;
+}
+
+async function scrapeBodyHtml($) {
+
 }
 
 /* UTILITY FUNCTIONS */

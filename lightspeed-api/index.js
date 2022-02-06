@@ -3,15 +3,30 @@ const request = require('request-promise')
 const cheerio = require('cheerio');
 fs = require('fs');
 
-const fossellos = require('./fosellos_products');
+//const fossellos = require('./fosellos_products');
+const so = require('./site_objects');
+const title_scraper = require('./product_title_scrapper');
 
 const result = [];
 const product_urls = []
 
-const fossellos_urls = fossellos.scrapeProductTitles();
+//const fossellos_urls = fossellos.scrapeProductTitles();
+// const RED_TOP_URLS = title_scraper.scrapeProductTitles(
+//     so.siteObjects().RED_TOP_FOOTWEAR.baseUrl,
+//     so.siteObjects().RED_TOP_FOOTWEAR.paginationSelector,
+//     so.siteObjects().RED_TOP_FOOTWEAR.productListSelector,
+//     so.siteObjects().RED_TOP_FOOTWEAR.productLinkSelector,
+//     so.siteObjects().RED_TOP_FOOTWEAR.removeNodes);
+
+const FOSSELLOS_URLS = title_scraper.scrapeProductTitles(
+    so.siteObjects().FOSSELLOS.baseUrl,
+    so.siteObjects().FOSSELLOS.paginationSelector,
+    so.siteObjects().FOSSELLOS.productListSelector,
+    so.siteObjects().FOSSELLOS.productLinkSelector
+)
 
 async function main() {
-    product_urls.push(await fossellos_urls)
+    product_urls.push(await FOSSELLOS_URLS)
 
     for(var i = 0; i < product_urls.length; i++) {
         for(var j = 0; j < product_urls[i].length; j++) {

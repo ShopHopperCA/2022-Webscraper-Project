@@ -7,20 +7,12 @@ let productListLength = 0;
 let page$;
 let pageHtml;
 
-async function main() {
-
-    return await scrapeProductUrls();
-}
-
 /* SCRAPER FUNCTIONS */
 
-async function scrapeProductUrls(baseUrl, 
-    paginationSelector = "div.pagination > ul > li", 
-    productListSelector = "div.products-list", 
-    productLinkSelector = ".product-image-wrapper",
-    removeNodesSelectors) {
+
+async function scrapeProductUrls(site) {
         
-    const html = await request.get(baseUrl);
+    const html = await request.get(site.baseUrl);
     const $ = await cheerio.load(html)
 
     const product_urls = [];
@@ -31,10 +23,10 @@ async function scrapeProductUrls(baseUrl,
     
     //Get pagination end
     try {
-        if(typeof paginationSelector === "string")
-            paginationEnd = $(paginationSelector).eq(-2).text();
-        else if(Number.isInteger(paginationSelector))
-            paginationEnd = paginationSelector;
+        if(typeof site.paginationSelector === "string")
+            paginationEnd = $(site.paginationSelector).eq(-2).text();
+        else if(Number.isInteger(site.paginationSelector))
+            paginationEnd = site.paginationSelector;
         else
             throw "Invalid pagination"
     } catch(err) {
@@ -44,21 +36,23 @@ async function scrapeProductUrls(baseUrl,
 
     for(var i = 1; i <= paginationEnd; i++) {
         await sleep(1000);
-        pageUrl = baseUrl + 'page' + i + '.html';
+        pageUrl = site.baseUrl + 'page' + i + '.html';
         pageHtml = await request.get(pageUrl);
         page$ = cheerio.load(pageHtml);
 
-        if(removeNodesSelectors) {
-            removeNodes(page$, removeNodesSelectors);
+        if(site.removeNodes) {
+            removeNodes(page$, site.removeNodes);
         }
         
-        productListLength = await page$(productListSelector).children().length;
+        productListLength = await page$(site.productListSelector).children().length;
 
         for(var j = 0; j < productListLength; j++) {
-            productElement = await page$(productListSelector).children().eq(j);
-            productUrl = await page$(productElement).find(productLinkSelector).attr('href');
+            productElement = await page$(site.productListSelector).children().eq(j);
+            productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
             productUrl = productUrl.replace('.html', '.ajax');
+            
             //console.log(productUrl);
+            
             product_urls.push(productUrl);
             
         }
@@ -68,7 +62,7 @@ async function scrapeProductUrls(baseUrl,
 }
 
 async function scrapeBodyHtml($) {
-
+    //This will double requests since we have to get the .html and .ajax
 }
 
 async function removeNodes(page$, nodes) {

@@ -1,6 +1,4 @@
 const fetch = require('node-fetch');
-const request = require('request-promise')
-const cheerio = require('cheerio');
 fs = require('fs');
 
 const so = require('./site_objects');
@@ -9,39 +7,11 @@ const url_scraper = require('./product_url_scrapper');
 const result = [];
 const product_urls = []
 
-const RED_TOP_URLS = url_scraper.scrapeProductUrls(
-    so.siteObjects().RED_TOP_FOOTWEAR.baseUrl,
-    so.siteObjects().RED_TOP_FOOTWEAR.paginationSelector,
-    so.siteObjects().RED_TOP_FOOTWEAR.productListSelector,
-    so.siteObjects().RED_TOP_FOOTWEAR.productLinkSelector,
-    so.siteObjects().RED_TOP_FOOTWEAR.removeNodes);
-
-const FOSSELLOS_URLS = url_scraper.scrapeProductUrls(
-    so.siteObjects().FOSSELLOS.baseUrl,
-    so.siteObjects().FOSSELLOS.paginationSelector,
-    so.siteObjects().FOSSELLOS.productListSelector,
-    so.siteObjects().FOSSELLOS.productLinkSelector
-)
-
-const ENVY_URLS = url_scraper.scrapeProductUrls(
-    so.siteObjects().ENVY_APPAREL.baseUrl,
-    so.siteObjects().ENVY_APPAREL.paginationSelector,
-    so.siteObjects().ENVY_APPAREL.productListSelector,
-    so.siteObjects().ENVY_APPAREL.productLinkSelector
-)
-
-const HONEST_URLS = url_scraper.scrapeProductUrls(
-    so.siteObjects().HONEST_BOUTIQUE.baseUrl,
-    so.siteObjects().HONEST_BOUTIQUE.paginationSelector,
-    so.siteObjects().HONEST_BOUTIQUE.productListSelector,
-    so.siteObjects().HONEST_BOUTIQUE.productLinkSelector
-)
-
 async function main() {
-    product_urls.push(await FOSSELLOS_URLS);
-    product_urls.push(await RED_TOP_URLS);
-    product_urls.push(await ENVY_URLS);
-    product_urls.push(await HONEST_URLS);
+
+    for (var i = 0; i < so.SITE_OBJECTS.length; i++) {
+        product_urls.push(await url_scraper.scrapeProductUrls(so.SITE_OBJECTS[i]))
+    }
 
     for(var i = 0; i < product_urls.length; i++) {
         for(var j = 0; j < product_urls[i].length; j++) {
@@ -61,14 +31,14 @@ async function main() {
             data.variants = await getVariants(json);
             data.images = await getImages(json);
             
-            result.push(data);
+            await result.push(data);
         }
     }
 
-    //await console.log(results);
+    //await console.log(result);
 
     //Write to output file
-    fs.writeFileSync('./outputJson.json', JSON.stringify(result));
+    //fs.writeFileSync('./outputJson.json', JSON.stringify(result));
     
 }
 

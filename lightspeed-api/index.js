@@ -1,3 +1,15 @@
+/* 
+
+index.js - This file is where the scrape product urls function is called and the product data is processed and outputed as JSON.
+
+Important Functions:
+
+main() - This function is where the scraping and data processing are executed.
+
+get[Datapoint] - Each of these functions returns [Datapoint] from the .ajax site gotten from the product url scrape.
+
+*/
+
 const fetch = require('node-fetch');
 fs = require('fs');
 

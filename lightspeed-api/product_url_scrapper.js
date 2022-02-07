@@ -1,6 +1,19 @@
+/* 
+
+product_url_scraper.js - This file is where the product urls needed to access the Lightspeed AJAX pages are scraped. We need to use this since the
+only way to access the AJAX for the products is to add ".ajax" to the end of the products url.
+
+Important Functions:
+
+scrapeProductUrls(site) - This function takes in a site object from `site_objects.js` which includes all of the selectors and the base url for the given site.
+It will then loop through each page related to the base url, scraping all product urls based on the given selectors.
+
+removeNodes(page$, nodes) - This function takes in an array of nodes that are deleted from the page at the beginning of the outer for loop execution. 
+Its purpose is to remove any any HTML elements that may be a part of the product list but do not have a link to a product page.
+*/
+
 const request = require('request-promise');
 const cheerio = require('cheerio');
-//const baseUrl = 'https://www.fossellos.com/shop/';
 
 let pageUrl = "";
 let productListLength = 0;

@@ -1,3 +1,9 @@
+/* 
+
+site_objects.js - This file only contains 'SITE_OBJECTS' a constant array of objects that is based into 'scrapeProductUrls()'. It contains the information
+that the function needs to find the product urls for a given site.
+
+*/
 const SITE_OBJECTS = [
     FOSSELLOS = {
         baseUrl : "https://www.fossellos.com/shop/",

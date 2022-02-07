@@ -1,0 +1,24 @@
+{
+  "name": "2022-Webscraper-Project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adancalderon/2022-Webscraper-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adancalderon/2022-Webscraper-Project/issues"
+  },
+  "homepage": "https://github.com/adancalderon/2022-Webscraper-Project#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "node-fetch": "^2.6.7"
+  }
+}

@@ -48,7 +48,7 @@ async function main() {
             
             var data = {}
             let response = await fetch(product_urls[i][j])
-            //await console.log(response)
+
             let json = await response.json();
 
             data.id = await getId(json);
@@ -61,15 +61,14 @@ async function main() {
             data.variants = await getVariants(json);
             data.images = await getImages(json);
             
-            
             result.push(data);
         }
     }
 
-    await console.log(result.length);
-    //await console.log("Amount of items scraped: " + product_urls.length)
+    //await console.log(results);
+
     //Write to output file
-    //fs.writeFileSync('./outputJson.json', JSON.stringify(result));
+    fs.writeFileSync('./outputJson.json', JSON.stringify(result));
     
 }
 

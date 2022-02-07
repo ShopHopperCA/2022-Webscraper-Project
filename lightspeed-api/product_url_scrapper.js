@@ -9,12 +9,12 @@ let pageHtml;
 
 async function main() {
 
-    return await scrapeProductTitles();
+    return await scrapeProductUrls();
 }
 
 /* SCRAPER FUNCTIONS */
 
-async function scrapeProductTitles(baseUrl, 
+async function scrapeProductUrls(baseUrl, 
     paginationSelector = "div.pagination > ul > li", 
     productListSelector = "div.products-list", 
     productLinkSelector = ".product-image-wrapper",
@@ -56,7 +56,7 @@ async function scrapeProductTitles(baseUrl,
             productElement = await page$(productListSelector).children().eq(j);
             productUrl = await page$(productElement).find(productLinkSelector).attr('href');
             productUrl = productUrl.replace('.html', '.ajax');
-            console.log(productUrl);
+            //console.log(productUrl);
             product_urls.push(productUrl);
             
         }
@@ -83,4 +83,4 @@ async function sleep(miliseconds)
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 }
 
-module.exports = {scrapeProductTitles}
+module.exports = {scrapeProductUrls: scrapeProductUrls}

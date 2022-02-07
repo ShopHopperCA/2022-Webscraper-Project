@@ -3,30 +3,45 @@ const request = require('request-promise')
 const cheerio = require('cheerio');
 fs = require('fs');
 
-//const fossellos = require('./fosellos_products');
 const so = require('./site_objects');
-const title_scraper = require('./product_title_scrapper');
+const url_scraper = require('./product_url_scrapper');
 
 const result = [];
 const product_urls = []
 
-//const fossellos_urls = fossellos.scrapeProductTitles();
-// const RED_TOP_URLS = title_scraper.scrapeProductTitles(
-//     so.siteObjects().RED_TOP_FOOTWEAR.baseUrl,
-//     so.siteObjects().RED_TOP_FOOTWEAR.paginationSelector,
-//     so.siteObjects().RED_TOP_FOOTWEAR.productListSelector,
-//     so.siteObjects().RED_TOP_FOOTWEAR.productLinkSelector,
-//     so.siteObjects().RED_TOP_FOOTWEAR.removeNodes);
+const RED_TOP_URLS = url_scraper.scrapeProductUrls(
+    so.siteObjects().RED_TOP_FOOTWEAR.baseUrl,
+    so.siteObjects().RED_TOP_FOOTWEAR.paginationSelector,
+    so.siteObjects().RED_TOP_FOOTWEAR.productListSelector,
+    so.siteObjects().RED_TOP_FOOTWEAR.productLinkSelector,
+    so.siteObjects().RED_TOP_FOOTWEAR.removeNodes);
 
-const FOSSELLOS_URLS = title_scraper.scrapeProductTitles(
+const FOSSELLOS_URLS = url_scraper.scrapeProductUrls(
     so.siteObjects().FOSSELLOS.baseUrl,
     so.siteObjects().FOSSELLOS.paginationSelector,
     so.siteObjects().FOSSELLOS.productListSelector,
     so.siteObjects().FOSSELLOS.productLinkSelector
 )
 
+const ENVY_URLS = url_scraper.scrapeProductUrls(
+    so.siteObjects().ENVY_APPAREL.baseUrl,
+    so.siteObjects().ENVY_APPAREL.paginationSelector,
+    so.siteObjects().ENVY_APPAREL.productListSelector,
+    so.siteObjects().ENVY_APPAREL.productLinkSelector
+)
+
+const HONEST_URLS = url_scraper.scrapeProductUrls(
+    so.siteObjects().HONEST_BOUTIQUE.baseUrl,
+    so.siteObjects().HONEST_BOUTIQUE.paginationSelector,
+    so.siteObjects().HONEST_BOUTIQUE.productListSelector,
+    so.siteObjects().HONEST_BOUTIQUE.productLinkSelector
+)
+
 async function main() {
-    product_urls.push(await FOSSELLOS_URLS)
+    product_urls.push(await FOSSELLOS_URLS);
+    product_urls.push(await RED_TOP_URLS);
+    product_urls.push(await ENVY_URLS);
+    product_urls.push(await HONEST_URLS);
 
     for(var i = 0; i < product_urls.length; i++) {
         for(var j = 0; j < product_urls[i].length; j++) {
@@ -35,8 +50,6 @@ async function main() {
             let response = await fetch(product_urls[i][j])
             //await console.log(response)
             let json = await response.json();
-
-            
 
             data.id = await getId(json);
             data.title = await getTitle(json);
@@ -53,7 +66,8 @@ async function main() {
         }
     }
 
-    await console.log(result);
+    await console.log(result.length);
+    //await console.log("Amount of items scraped: " + product_urls.length)
     //Write to output file
     //fs.writeFileSync('./outputJson.json', JSON.stringify(result));
     

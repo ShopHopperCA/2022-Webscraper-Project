@@ -35,6 +35,8 @@ async function scrapeProductUrls(baseUrl,
             paginationEnd = $(paginationSelector).eq(-2).text();
         else if(Number.isInteger(paginationSelector))
             paginationEnd = paginationSelector;
+        else
+            throw "Invalid pagination"
     } catch(err) {
         console.log("Please enter a valid pagination value (Selector or Integer)");
     }

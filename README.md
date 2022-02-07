@@ -1,7 +1,7 @@
 # 2022-Webscraper-Project
 
   ## Weebly Scrapers
-    - ~Kaleco Scraper~ (https://www.kaleco.ca/) : **1st draft**
+    - ~~Kaleco Scraper~~ (https://www.kaleco.ca/) : ***1st draft***
     - Okanagan Skate Co Scraper (http://www.okanaganskate.com/)
     
   ## Square Scrapers:

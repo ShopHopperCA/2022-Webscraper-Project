@@ -2,7 +2,7 @@
 
   ## Weebly Scrapers
   - ~~Kaleco Scraper~~ (https://www.kaleco.ca/) : ***1st draft***
-  - Okanagan Skate Co Scraper (http://www.okanaganskate.com/)
+  - ~~Okanagan Skate Co Scraper~~ (http://www.okanaganskate.com/) : ***1st draft***
     
   ## Square Scrapers:
   - Morgan Kelowna (https://morganekelowna.square.site/s/shop) : 

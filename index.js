@@ -6,12 +6,14 @@ const url = 'https://mostwantedresale.com/collections/clothing?page=';
 const url_start = url.split('/')[0] + "/" + url.split('/')[1] + "/" + url.split('/')[2];
 let b_name;
 
+// get product urls, because API acessed via producturl.js
 async function getProductUrls(url) {
 
     let urlArray = [];
+    const last_page = await get_pagination_end();
 
     //pagination loop
-    for(let i = 1; i <= 3; i++){
+    for(let i = 1; i <= last_page; i++){
 
     const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage();
@@ -33,7 +35,7 @@ async function getProductUrls(url) {
     return urlArray;
 }
 
-
+//combine JSON of each product into one JSON object
 async function getJSON()
 {
     let finalResult;
@@ -45,10 +47,12 @@ async function getJSON()
             )
         ).then(data => {
             finalResult = data.flat();
+            //console.log(finalResult.length)
             return finalResult;
         });
 }
 
+//Exteract data needed from JSON
 async function extract()
 {
     const json_all = await getJSON();
@@ -102,15 +106,41 @@ async function extract()
        return {id,title,business_name,url,handle,vendor,tags,variants,images,options,body_html,created_at,product_type,published_at,colors,compare_at_price,original_price,sizes};
          });
 
-        console.log(final);
+         console.log(final);
          return final;
     
 }
 
 
+//main function to get JSON Data
+async function main()
+{
+    const JSON_data = await extract();
+}
+
+//call main
+main()
+
+
+//utility functions
+
+//function to limit requests
 async function sleep(miliseconds)
 {
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 }
 
-extract();
+//get pagination end from first page
+async function get_pagination_end()
+{
+    const browser = await puppeteer.launch({headless:false});
+    const page = await browser.newPage();
+    await page.goto(url + 1);
+    const html = await page.content();
+    const $ = await cheerio.load(html);
+
+    const pagination_end = $(".pagination__item:nth-last-child(2)").text();
+    return pagination_end;
+}
+
+

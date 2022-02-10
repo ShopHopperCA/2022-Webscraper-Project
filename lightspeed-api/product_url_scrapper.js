@@ -34,7 +34,11 @@ async function scrapeProductUrls(site) {
     let productUrl;
     let productElement;
     
-    //Get pagination end
+    /*
+        Check if paginationSelector is a string, if so, check if the element exists. If true, get the last number in pagination list, if false, paginationEnd = 1.
+        If paginationSelector is a number, paginationEnd = paginationSelector.
+        If paginationSelector is neither a string or number, throw an exception.    
+    */
     try {
         if(typeof site.paginationSelector === "string")
             if( $(site.paginationSelector).length )

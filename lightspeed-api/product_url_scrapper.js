@@ -37,7 +37,12 @@ async function scrapeProductUrls(site) {
     //Get pagination end
     try {
         if(typeof site.paginationSelector === "string")
-            paginationEnd = $(site.paginationSelector).eq(-2).text();
+            if( $(site.paginationSelector).length )
+                paginationEnd = $(site.paginationSelector).eq(-2).text();
+            else {
+                paginationEnd = 1;
+                console.log("`"+site.baseUrl+"`" + " has no pagination");
+            }
         else if(Number.isInteger(site.paginationSelector))
             paginationEnd = site.paginationSelector;
         else
@@ -64,7 +69,7 @@ async function scrapeProductUrls(site) {
             productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
             productUrl = productUrl.replace('.html', '.ajax');
             
-            //console.log(productUrl);
+            console.log(productUrl);
             
             product_urls.push(productUrl);
             

@@ -47,7 +47,7 @@ async function main() {
         }
     }
 
-    //await console.log(result);
+    await console.log(result);
 
     //Write to output file
     //fs.writeFileSync('./outputJson.json', JSON.stringify(result));

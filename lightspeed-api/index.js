@@ -26,7 +26,6 @@ async function main() {
     }
 
     for(var i = 0; i < product_urls.length; i++) {
-        console.log(product_urls)
         for(var j = 0; j < product_urls[i].length; j++) {
 
             var data = {}
@@ -49,6 +48,7 @@ async function main() {
     }
 
     await console.log(result);
+    await console.log("Number of items scraped: " + result.length);
 
     //Write to output file
     //fs.writeFileSync('./outputJson.json', JSON.stringify(result));
@@ -71,14 +71,6 @@ async function getBodyHtml() {
 
 async function getVendor(productJson) {
     return productJson['brand']['title'];
-}
-
-async function getProductType(productJson) {
-
-}
-
-async function getTags(productJson) {
-
 }
 
 async function getVariants(productJson) {

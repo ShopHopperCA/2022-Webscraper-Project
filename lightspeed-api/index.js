@@ -26,8 +26,9 @@ async function main() {
     }
 
     for(var i = 0; i < product_urls.length; i++) {
+        console.log(product_urls)
         for(var j = 0; j < product_urls[i].length; j++) {
-            
+
             var data = {}
             let response = await fetch(product_urls[i][j])
 

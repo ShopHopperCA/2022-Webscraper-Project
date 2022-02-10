@@ -24,60 +24,62 @@ let pageHtml;
 
 
 async function scrapeProductUrls(site) {
-        
-    const html = await request.get(site.baseUrl);
-    const $ = await cheerio.load(html)
-
     const product_urls = [];
-    
-    let paginationEnd;
-    let productUrl;
-    let productElement;
-    
-    /*
-        Check if paginationSelector is a string, if so, check if the element exists. If true, get the last number in pagination list, if false, paginationEnd = 1.
-        If paginationSelector is a number, paginationEnd = paginationSelector.
-        If paginationSelector is neither a string or number, throw an exception.    
-    */
-    try {
-        if(typeof site.paginationSelector === "string")
-            if( $(site.paginationSelector).length )
-                paginationEnd = $(site.paginationSelector).eq(-2).text();
-            else {
-                paginationEnd = 1;
-                console.log("`"+site.baseUrl+"`" + " has no pagination");
-            }
-        else if(Number.isInteger(site.paginationSelector))
-            paginationEnd = site.paginationSelector;
-        else
-            throw "Invalid pagination"
-    } catch(err) {
-        console.log("Please enter a valid pagination value (Selector or Integer)");
-    }
 
-
-    for(var i = 1; i <= paginationEnd; i++) {
-        await sleep(1000);
-        pageUrl = site.baseUrl + 'page' + i + '.html';
-        pageHtml = await request.get(pageUrl);
-        page$ = cheerio.load(pageHtml);
-
-        if(site.removeNodes) {
-            removeNodes(page$, site.removeNodes);
-        }
+    for(var urlIndex = 0; urlIndex < site.baseUrl.length; urlIndex++) {
+        console.log(urlIndex);
+        const html = await request.get(site.baseUrl[urlIndex]);
+        const $ = await cheerio.load(html)
+        console.log("urlIndex: " + urlIndex)
         
-        productListLength = await page$(site.productListSelector).children().length;
-
-        for(var j = 0; j < productListLength; j++) {
-            productElement = await page$(site.productListSelector).children().eq(j);
-            productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
-            productUrl = productUrl.replace('.html', '.ajax');
-            
-            console.log(productUrl);
-            
-            product_urls.push(productUrl);
-            
+        let paginationEnd;
+        let productUrl;
+        let productElement;
+        
+        /*
+            Check if paginationSelector is a string, if so, check if the element exists. If true, get the last number in pagination list, if false, paginationEnd = 1.
+            If paginationSelector is a number, paginationEnd = paginationSelector.
+            If paginationSelector is neither a string or number, throw an exception.    
+        */
+        try {
+            if(typeof site.paginationSelector === "string")
+                if( $(site.paginationSelector).length )
+                    paginationEnd = $(site.paginationSelector).eq(-2).text();
+                else {
+                    paginationEnd = 1;
+                    console.log("`"+site.baseUrl[urlIndex]+"`" + " has no pagination");
+                }
+            else if(Number.isInteger(site.paginationSelector))
+                paginationEnd = site.paginationSelector;
+            else
+                throw "Invalid pagination"
+        } catch(err) {
+            console.log("Please enter a valid pagination value (Selector or Integer)");
         }
+    
+        for(var i = 1; i <= paginationEnd; i++) {
+            await sleep(1000);
+            pageUrl = site.baseUrl[urlIndex] + 'page' + i + '.html';
+            pageHtml = await request.get(pageUrl);
+            page$ = cheerio.load(pageHtml);
+    
+            if(site.removeNodes) {
+                removeNodes(page$, site.removeNodes);
+            }
+            
+            productListLength = await page$(site.productListSelector).children().length;
+    
+            for(var j = 0; j < productListLength; j++) {
+                productElement = await page$(site.productListSelector).children().eq(j);
+                productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
+                productUrl = productUrl.replace('.html', '.ajax');
+                
+                console.log(productUrl);
+                
+                product_urls.push(productUrl);
+                
+            }
+        } 
     }
 
     return product_urls;

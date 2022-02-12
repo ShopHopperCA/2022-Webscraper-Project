@@ -85,10 +85,6 @@ async function scrapeProductUrls(site) {
     return product_urls;
 }
 
-async function scrapeBodyHtml($) {
-    //This will double requests since we have to get the .html and .ajax
-}
-
 async function removeNodes(page$, nodes) {
     nodes.forEach(element => {
         page$(element).remove();

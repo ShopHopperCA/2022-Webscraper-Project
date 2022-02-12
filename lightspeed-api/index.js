@@ -37,6 +37,7 @@ async function main() {
 
             data.id = await getId(json);
             data.title = await getTitle(json);
+            data.business_name = await scrapeBusinessName(json);
             data.url = await getUrl(json);
             data.description = await getDescription(json);
             data.vendor = await getVendor(json);
@@ -45,8 +46,7 @@ async function main() {
             data.variants = await getVariants(json);
             data.images = await getImages(json);
             data.tags = await getTags(json);
-
-            data.bodyHtml = await scrapeBodyHtml(json);
+            //data.body_html = await scrapeBodyHtml(json);
             
             await result.push(data);
         }
@@ -111,6 +111,15 @@ async function getUrl(productJson) {
 }
 
 /* UTILITY FUNCTIONS */
+
+async function scrapeBusinessName(productJson) {
+    const url = await getUrl(productJson);
+    startPos = url.indexOf('.');
+    endPos = url.indexOf('.', startPos + 1);
+
+    return url.substring(startPos + 1, endPos);
+
+}
 
 async function scrapeBodyHtml(productJson) {
     const url = await getUrl(productJson);

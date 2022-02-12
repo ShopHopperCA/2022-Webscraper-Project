@@ -42,6 +42,7 @@ async function main() {
             data.available = await getInStock(json);
             data.variants = await getVariants(json);
             data.images = await getImages(json);
+            data.tags = await getTags(json);
             
             await result.push(data);
         }
@@ -75,6 +76,15 @@ async function getVendor(productJson) {
 
 async function getVariants(productJson) {
     return productJson['variants']
+}
+
+async function getTags(productJson) {
+    var title = await getTitle(productJson);
+    var tags = [];
+    //console.log(title)
+    tags = title.split(' ');
+
+    return tags;
 }
 
 async function getImages(productJson) {

@@ -46,7 +46,7 @@ async function main() {
             data.variants = await getVariants(json);
             data.images = await getImages(json);
             data.tags = await getTags(json);
-            //data.body_html = await scrapeBodyHtml(json);
+            data.body_html = await scrapeBodyHtml(json);
             
             await result.push(data);
         }

@@ -48,6 +48,33 @@ const SITE_OBJECTS = [
         paginationSelector : "div.pagination > ul > li", 
         productListSelector : "div.products-list", 
         productLinkSelector : ".product-image-wrapper",
+    },
+
+    ARTFUL_HAND = {
+        baseUrl : ["https://www.theartfulhandstores.com/clothing/"],
+        paginationSelector : '',
+        productListSelector : 'ul.list-collection',
+        productLinkSelector : 'h3.mobile-nobrand > a'
+
+    },
+
+    ONE_BOARD = {
+        baseUrl : [
+            "https://www.oneboardshop.com/snow/womens-outerwear/womens-jackets/",
+            "https://www.oneboardshop.com/snow/womens-outerwear/womens-pants/",
+            "https://www.oneboardshop.com/snow/womens-outerwear/womens-one-piece-suits/",
+            "https://www.oneboardshop.com/snow/womens-outerwear/womens-bib-pants/",
+            "https://www.oneboardshop.com/snow/womens-outerwear/womens-vests/",
+            "https://www.oneboardshop.com/snow/womens-outerwear/womens-gloves/",
+            "https://www.oneboardshop.com/snow/womens-outerwear/womens-mitts/",
+            "https://www.oneboardshop.com/footwear/womens/shoes/",
+            "https://www.oneboardshop.com/footwear/womens/sandals/",
+    ],
+        paginationSelector : "div.mid-height:nth-child(2) > ul:nth-child(1) > li",
+        productListSelector : ".col-md-9 > div:nth-child(1)",
+        productLinkSelector : "div.product-block-image > a",
+        productItemSelector : ".col-md-4",
+        removeNodes : ["div.cf", ".col-md-9 > div:nth-child(1) > script:nth-child(4)",]
     }
 ]
 

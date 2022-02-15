@@ -59,6 +59,7 @@ async function scrapeProductUrls(site) {
     
         for(var i = 1; i <= paginationEnd; i++) {
             await sleep(1000);
+            let productItemSelector = "";
             pageUrl = site.baseUrl[urlIndex] + 'page' + i + '.html';
             pageHtml = await request.get(pageUrl);
             page$ = cheerio.load(pageHtml);
@@ -67,10 +68,16 @@ async function scrapeProductUrls(site) {
                 removeNodes(page$, site.removeNodes);
             }
             
-            productListLength = await page$(site.productListSelector).children().length;
-    
+            if(site.productItemSelector)
+                productItemSelector = site.productItemSelector
+            
+            productListLength = await page$(site.productListSelector).children(productItemSelector).length;
+            //console.log(page$(site.productListSelector).children())
+
             for(var j = 0; j < productListLength; j++) {
                 productElement = await page$(site.productListSelector).children().eq(j);
+                //console.log(productElement.text());
+                //console.log("LENGTH: " + productListLength);
                 productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
                 productUrl = productUrl.replace('.html', '.ajax');
                 
@@ -83,10 +90,6 @@ async function scrapeProductUrls(site) {
     }
 
     return product_urls;
-}
-
-async function scrapeBodyHtml($) {
-    //This will double requests since we have to get the .html and .ajax
 }
 
 async function removeNodes(page$, nodes) {

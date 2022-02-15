@@ -10,6 +10,8 @@ get[Datapoint] - Each of these functions returns [Datapoint] from the .ajax site
 
 */
 
+const request = require('request-promise');
+const cheerio = require('cheerio');
 const fetch = require('node-fetch');
 fs = require('fs');
 
@@ -35,6 +37,7 @@ async function main() {
 
             data.id = await getId(json);
             data.title = await getTitle(json);
+            data.business_name = await scrapeBusinessName(json);
             data.url = await getUrl(json);
             data.description = await getDescription(json);
             data.vendor = await getVendor(json);
@@ -43,6 +46,7 @@ async function main() {
             data.variants = await getVariants(json);
             data.images = await getImages(json);
             data.tags = await getTags(json);
+            data.body_html = await scrapeBodyHtml(json);
             
             await result.push(data);
         }
@@ -52,7 +56,7 @@ async function main() {
     await console.log("Number of items scraped: " + result.length);
 
     //Write to output file
-    //fs.writeFileSync('./outputJson.json', JSON.stringify(result));
+    fs.writeFileSync('./outputJson.json', JSON.stringify(result));
     
 }
 
@@ -66,10 +70,6 @@ async function getId(productJson) {
     return productJson['id'];
 }
 
-async function getBodyHtml() {
-
-}
-
 async function getVendor(productJson) {
     return productJson['brand']['title'];
 }
@@ -81,7 +81,7 @@ async function getVariants(productJson) {
 async function getTags(productJson) {
     var title = await getTitle(productJson);
     var tags = [];
-    //console.log(title)
+
     tags = title.split(' ');
 
     return tags;
@@ -111,6 +111,25 @@ async function getUrl(productJson) {
 }
 
 /* UTILITY FUNCTIONS */
+
+async function scrapeBusinessName(productJson) {
+    const url = await getUrl(productJson);
+    startPos = url.indexOf('.');
+    endPos = url.indexOf('.', startPos + 1);
+
+    return url.substring(startPos + 1, endPos);
+
+}
+
+async function scrapeBodyHtml(productJson) {
+    const url = await getUrl(productJson);
+    const html = await request.get(url);
+    const $ = await cheerio.load(html);
+    
+    let bodyHtml = $("body").html();
+
+    return bodyHtml;
+}
 
 //Stops the program for a specified number of seconds
 async function sleep(miliseconds)

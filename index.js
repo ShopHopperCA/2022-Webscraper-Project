@@ -1,36 +1,60 @@
 const request = require("request-promise");
 const cheerio = require('cheerio');
 
-const url = "https://wearabouts.ca/product-category/women/shirts-tops/";
+const url = "https://wearabouts.ca/product-category/women";
+let finalres = new Array();
 
 async function scrapeMain() {
+    
+    let result;
+    let end_page;
+    
+    //get amount of pages
+    end_page = await get_pagination_end(url);
 
-    const html = await request.get(url);
+    //sleep to limit requests
+    await sleep(1000)
+
+    //pagination loop
+    for(let i = 1; i <= end_page; i++){
+      
+    const html = await request.get(url+'/page/'+ i +'/');
     const $ = await cheerio.load(html);
-  
-  
 
-    const result = $('.product').map((index,element) =>{
+     result = $('li.product-type-variable').map((index,element) =>{
         
         const titleElement = $(element).find(".woocommerce-loop-product__title");
         const urlElement = $(element).find(".woocommerce-loop-product__link");
         
         const id = $(element).find(".add_to_cart_button").attr('data-product_id');
         const title = titleElement.text();
-        const business_name = $("title").text().split("-")[1].trim(); 
+
+        let business_name = "";
+        if(i == 1)
+        {
+            business_name = $("title").text().split("-")[1].trim();
+        }
+        else
+        {
+            business_name = $("title").text().split("-")[2].trim();
+        }
+
         const url = urlElement.attr('href');
-        //const vendor = titleElement.text().split("W")[0];
+
         return{id,title,business_name,url};
     }).get();
+       
+        finalres.push(result);
+        
+    }
 
-return result;
-
+  finalres = finalres.flat();
+  console.log(finalres.length)
+  console.log(finalres);
+  return result;
 }
 
-
-scrapeMain();
-
-
+/*
 async function scrapeSecondary(item_title_and_url)
 {
     
@@ -47,18 +71,33 @@ async function scrapeSecondary(item_title_and_url)
             const tag = $(element).text()
             tags.push(tag);
         });
-      
+        
+        //get tag urls to find vendor and product type
+        let tag_urls = [];
+        $(".posted_in").find('a').each((index,element) => 
+        {
+            const t_url = $(element).attr('href')
+            tag_urls.push(t_url);
+        });
+        
+        let vendor_index;
+        for(let i = 0; i <tag_urls.length;i++){
+          if(tag_urls[i].indexOf("brand") != -1){
+            vendor_index = i;
+          }
+        }
           
         //vendor
-        if(tags.length == 3)
+        if(vendor_index == undefined)
         {
-          item.vendor = tags[0]
+            item.vendor = "N/A";
         }
         else
         {
-         item.vendor = "N/A";
+            item.vendor = tags[vendor_index];
         }
-      
+    
+        
         //insert tags into JSON
         item.tags = tags;
       
@@ -71,7 +110,7 @@ async function scrapeSecondary(item_title_and_url)
            const grams = elem.weight;
            const price = elem.display_price;
        
-           const sizes = elem.attributes.attribute_pa_size;
+           const size = elem.attributes.attribute_pa_size;
            const colors = elem.attributes.attribute_pa_color;
        
            const position = i;
@@ -81,7 +120,7 @@ async function scrapeSecondary(item_title_and_url)
            const compare_at_price = elem.display_regular_price;
 
        
-           return{id,sku,grams,price,sizes,colors,position,available, compare_at_price};
+           return{id,sku,grams,price,size,colors,position,available, compare_at_price};
             
         });
     
@@ -96,49 +135,62 @@ async function scrapeSecondary(item_title_and_url)
             return{src,height,width,position};
         }).get();
       
-    //options
       
     //body html
     item.body_html = $(".woocommerce-product-details__short-description").html();
       
     //product_type
-    if(tags.length == 3)
-    {
-        item.product_type = tags[1]
+    let pt_index;
+    for(let i = 0; i <tag_urls.length;i++){
+      if(tag_urls[i].indexOf("brand") == -1){
+        pt_index = i;
+        break;
+      }
     }
-    else
-    {
-       item.product_type = tags[0];
-    }
+
+    item.product_type = tags[pt_index];
       
     //updated time
     item.updated_at = $('meta[property="article:modified_time"]').attr('content');
       
     //colors
-      
-    
+    item.colors = $('.woocommerce-product-attributes-item--attribute_pa_color').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
+ 
     //price
     item.original_price = $('div.summary.entry-summary > p > span > bdi').text().replace('$','').replace('.','');
       
-      
-    //sizes
         
-      
-          return item;
+      return item;
     })
     )
 }
 
+*/
+
+//limit number of requests
 async function sleep(miliseconds)
 {
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 }
 
+//function to get how many pages will needed to be scraped
+async function get_pagination_end(url)
+{
+    const html = await request.get(url);
+    const $ = await cheerio.load(html);
+
+    const last_page = $(".page-numbers li:nth-last-child(2)").text();
+
+    return last_page;
+}
+
+
+//main function to call all scraping functions
 async function main()
 {
     const item_title_and_url = await scrapeMain();
-    const item_info = await scrapeSecondary(item_title_and_url);
-    console.log(item_info);
+    //const item_info = await scrapeSecondary(item_title_and_url);
+    //console.log(item_info);
 }
 
 main();

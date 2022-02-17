@@ -56,6 +56,8 @@
     "performance-now": "^2.1.0",
     "psl": "^1.8.0",
     "punycode": "^2.1.1",
+    "pupeteer": "^0.0.1",
+    "puppeteer": "^11.0.0",
     "qs": "^6.5.3",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",

@@ -1,32 +1,38 @@
-const request = require("request-promise");
+//const request = require("request-promise");
 const cheerio = require('cheerio');
+const puppeteer = require('puppeteer');
 
-const url = "https://wearabouts.ca/product-category/women";
-let finalres = new Array();
+const clothes_url = "https://wearabouts.ca/product-category/women";
+const shoes_url = "https://wearabouts.ca/product-category/womens-footwear";
 
-async function scrapeMain() {
+let finalres = [];
+
+async function scrapeMain(url,page) {
     
     let result;
     let end_page;
     
     //get amount of pages
-    end_page = await get_pagination_end(url);
+    end_page = await get_pagination_end(url,page);
 
     //sleep to limit requests
-    await sleep(1000)
+    await sleep(1000);
 
     //pagination loop
     for(let i = 1; i <= end_page; i++){
-      
-    const html = await request.get(url+'/page/'+ i +'/');
+    
+    
+    await page.goto(url +'/page/'+ i +'/');
+    const html = await page.content();
     const $ = await cheerio.load(html);
+   
 
-     result = $('li.product-type-variable').map((index,element) =>{
+    result = $('li.product-type-variable').map((index,element) =>{
         
         const titleElement = $(element).find(".woocommerce-loop-product__title");
         const urlElement = $(element).find(".woocommerce-loop-product__link");
         
-        const id = $(element).find(".add_to_cart_button").attr('data-product_id');
+        const id = $(element).attr("class").split(" ")[2].split("-")[1];
         const title = titleElement.text();
 
         let business_name = "";
@@ -49,23 +55,22 @@ async function scrapeMain() {
     }
 
   finalres = finalres.flat();
-  console.log(finalres.length)
-  console.log(finalres);
-  return result;
+  return finalres;
 }
 
-/*
-async function scrapeSecondary(item_title_and_url)
+
+async function scrapeSecondary(item,page)
 {
     
-    return await Promise.all( item_title_and_url.map(async(item)=>{
+    for(var i=0;i<item.length;i++){
 
-        const htmlResult = await request.get(item.url);
-        const $ = await cheerio.load(htmlResult);
+        await page.goto(item[i].url)
+        const html = await page.content();
+        const $ = await cheerio.load(html);
         await sleep(1000);
         
         //scrape tags
-        let tags = [];
+       let tags = [];
         $(".posted_in").find('a').each((index,element) => 
         {
             const tag = $(element).text()
@@ -81,30 +86,30 @@ async function scrapeSecondary(item_title_and_url)
         });
         
         let vendor_index;
-        for(let i = 0; i <tag_urls.length;i++){
-          if(tag_urls[i].indexOf("brand") != -1){
-            vendor_index = i;
+        for(let j = 0; j <tag_urls.length;j++){
+          if(tag_urls[j].indexOf("brand") != -1){
+            vendor_index = j;
           }
         }
           
         //vendor
         if(vendor_index == undefined)
         {
-            item.vendor = "N/A";
+            item[i].vendor = "N/A";
         }
         else
         {
-            item.vendor = tags[vendor_index];
+            item[i].vendor = tags[vendor_index];
         }
     
-        
+
         //insert tags into JSON
-        item.tags = tags;
+        item[i].tags = tags;
       
         //variant
         const v = JSON.parse($(".cart").attr("data-product_variations"));
-        let i = 1;
-        item.variants = Object.values(v).map(elem => {
+        let index = 1;
+        item[i].variants = Object.values(v).map(elem => {
            const id = elem.variation_id;
            const sku = elem.sku;
            const grams = elem.weight;
@@ -113,8 +118,8 @@ async function scrapeSecondary(item_title_and_url)
            const size = elem.attributes.attribute_pa_size;
            const colors = elem.attributes.attribute_pa_color;
        
-           const position = i;
-            i++;
+           const position = index;
+            index++;
        
            const available = elem.is_in_stock;
            const compare_at_price = elem.display_regular_price;
@@ -125,7 +130,7 @@ async function scrapeSecondary(item_title_and_url)
         });
     
         //images
-        item.images = $('.woocommerce-product-gallery__image').map((index,element) =>{
+        item[i].images = $('.woocommerce-product-gallery__image').map((index,element) =>{
             
             const src = $(element).find("a").find("img").attr("src");
             const width = $(element).find("a").find("img").attr("width");
@@ -137,35 +142,33 @@ async function scrapeSecondary(item_title_and_url)
       
       
     //body html
-    item.body_html = $(".woocommerce-product-details__short-description").html();
+    item[i].body_html = $(".woocommerce-product-details__short-description").html();
       
     //product_type
     let pt_index;
-    for(let i = 0; i <tag_urls.length;i++){
-      if(tag_urls[i].indexOf("brand") == -1){
-        pt_index = i;
+    for(let j = 0; j <tag_urls.length;j++){
+      if(tag_urls[j].indexOf("brand") == -1){
+        pt_index = j;
         break;
       }
     }
 
-    item.product_type = tags[pt_index];
+    item[i].product_type = tags[pt_index];
       
     //updated time
-    item.updated_at = $('meta[property="article:modified_time"]').attr('content');
+    item[i].updated_at = $('meta[property="article:modified_time"]').attr('content');
       
     //colors
-    item.colors = $('.woocommerce-product-attributes-item--attribute_pa_color').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
+    item[i].colors = $('.woocommerce-product-attributes-item--attribute_pa_color').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
  
     //price
-    item.original_price = $('div.summary.entry-summary > p > span > bdi').text().replace('$','').replace('.','');
+    const price = $('div.summary.entry-summary > p > span > bdi').text().replace('$','').replace('.','');
+    item[i].original_price = price;
       
-        
-      return item;
-    })
-    )
-}
+    }
 
-*/
+    return item;
+}
 
 //limit number of requests
 async function sleep(miliseconds)
@@ -174,9 +177,11 @@ async function sleep(miliseconds)
 }
 
 //function to get how many pages will needed to be scraped
-async function get_pagination_end(url)
+async function get_pagination_end(url,page)
 {
-    const html = await request.get(url);
+
+    await page.goto(url);
+    const html = await page.content();
     const $ = await cheerio.load(html);
 
     const last_page = $(".page-numbers li:nth-last-child(2)").text();
@@ -188,9 +193,21 @@ async function get_pagination_end(url)
 //main function to call all scraping functions
 async function main()
 {
-    const item_title_and_url = await scrapeMain();
-    //const item_info = await scrapeSecondary(item_title_and_url);
-    //console.log(item_info);
+    const browser = await puppeteer.launch({headless:false});
+    const page = await browser.newPage();
+
+    //scrape clothing
+    const clothing_title_and_url = await scrapeMain(clothes_url,page);
+    const clothing_info = await scrapeSecondary(clothing_title_and_url,page);
+    console.log(clothing_info);
+    console.log(clothing_info.length);
+
+    //scrape shoes
+    const shoes_title_and_url = await scrapeMain(shoes_url,page);
+    const shoes_info = await scrapeSecondary(shoes_title_and_url,page);
+    console.log(shoes_info);
+    console.log(shoes_info.length);
+
 }
 
 main();

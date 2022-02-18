@@ -7,16 +7,14 @@ const url_start = url.split('/')[0] + "/" + url.split('/')[1] + "/" + url.split(
 let b_name;
 
 // get product urls, because API acessed via producturl.js
-async function getProductUrls(url) {
+async function getProductUrls(url,page) {
 
     let urlArray = [];
-    const last_page = await get_pagination_end();
+    const last_page = await get_pagination_end(page);
 
     //pagination loop
     for(let i = 1; i <= last_page; i++){
 
-    const browser = await puppeteer.launch({headless:false});
-    const page = await browser.newPage();
     await page.goto(url + i);
     const html = await page.content();
     const $ = await cheerio.load(html);
@@ -36,10 +34,10 @@ async function getProductUrls(url) {
 }
 
 //combine JSON of each product into one JSON object
-async function getJSON()
+async function getJSON(page)
 {
     let finalResult;
-    const urls = await getProductUrls(url);
+    const urls = await getProductUrls(url,page);
     return await Promise.all(
         urls.map(url =>
             fetch(url)
@@ -53,9 +51,9 @@ async function getJSON()
 }
 
 //Exteract data needed from JSON
-async function extract()
+async function extract(page)
 {
-    const json_all = await getJSON();
+    const json_all = await getJSON(page);
     final = Object.values(json_all).map(elem => {
        const id = elem.id;
        const title = elem.title;
@@ -70,7 +68,7 @@ async function extract()
         const id = elem.id;
         const sku = elem.sku;
         const price = elem.price;
-        const sizes = elem.options[0];
+        const size = elem.options[0];
         const title = elem.title;
         const option1 = elem.option1;
         const option2 = elem.option2;
@@ -80,7 +78,7 @@ async function extract()
         const compare_at_price = elem.compare_at_price;
         const requires_shipping = elem.requires_shipping;
        
-        return{id,sku,price,sizes,title,option1,option2,option3,taxable,available,compare_at_price,requires_shipping};
+        return{id,sku,price,size,title,option1,option2,option3,taxable,available,compare_at_price,requires_shipping};
              
          });
        
@@ -93,7 +91,7 @@ async function extract()
             return{src};
         });
 
-       const options = elem.options;
+       //const options = elem.options;
        const body_html = elem.description;
        const created_at = elem.created_at;
        const product_type = elem.type;
@@ -101,9 +99,9 @@ async function extract()
        const colors = [];
        const compare_at_price = elem.compare_at_price;
        const original_price = elem.price;
-       const sizes = elem.options[0].values;
+       //const sizes = elem.options[0].values;
 
-       return {id,title,business_name,url,handle,vendor,tags,variants,images,options,body_html,created_at,product_type,published_at,colors,compare_at_price,original_price,sizes};
+       return {id,title,business_name,url,handle,vendor,tags,variants,images,body_html,created_at,product_type,published_at,colors,compare_at_price,original_price};
          });
 
          console.log(final);
@@ -115,7 +113,9 @@ async function extract()
 //main function to get JSON Data
 async function main()
 {
-    const JSON_data = await extract();
+    const browser = await puppeteer.launch({headless:false});
+    const page = await browser.newPage();
+    const JSON_data = await extract(page);
 }
 
 //call main
@@ -131,10 +131,9 @@ async function sleep(miliseconds)
 }
 
 //get pagination end from first page
-async function get_pagination_end()
+async function get_pagination_end(page)
 {
-    const browser = await puppeteer.launch({headless:false});
-    const page = await browser.newPage();
+    
     await page.goto(url + 1);
     const html = await page.content();
     const $ = await cheerio.load(html);

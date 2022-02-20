@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const fs = require('fs');
 
 const url = "https://naughtygirlessentials.com/product-category/clothing";
 let finalres = new Array();
@@ -52,6 +53,11 @@ async function scrapeSecondary(item,page)
         //scrape vendor
         item[i].vendor = $('.elementor-post-info__terms-list-item').text();
 
+        if(item[i].vendor == "")
+        {
+            item[i].vendor = null;
+        }
+
         //scrape tags
         let tags = [];
         $(".tagged_as").find('a').each((index,element) => 
@@ -68,12 +74,20 @@ async function scrapeSecondary(item,page)
         let index = 1;
         item[i].variants = Object.values(v).map(elem => {
            const id = elem.variation_id;
-           const sku = elem.sku;
-           const grams = elem.weight;
            const price = elem.display_price;
        
            const size = elem.attributes.attribute_pa_sizes;
-           const colors = elem.attributes.attribute_pa_colors;
+           let colors = elem.attributes.attribute_pa_colors;
+           let metal_color = elem.attributes['attribute_metal-color'];
+
+           if(colors == undefined && metal_color == undefined)
+           {
+                colors = null;
+           }
+           else if(colors == undefined && metal_color != undefined)
+           {
+                colors = metal_color;
+           }
        
            const position = index;
             index++;
@@ -82,7 +96,7 @@ async function scrapeSecondary(item,page)
            const compare_at_price = elem.display_regular_price;
 
        
-           return{id,sku,grams,price,size,colors,position,available, compare_at_price};
+           return{id,price,size,colors,position,available, compare_at_price};
             
         });
     
@@ -102,21 +116,29 @@ async function scrapeSecondary(item,page)
     item[i].body_html = $(".woocommerce-Tabs-panel--description").html();
       
     //product_type
-     let categories = [];
-     $(".posted_in").find('a').each((index,element) => 
-     {
-         const tag = $(element).text()
-         categories.push(tag);
-     });
+    item[i].product_type = $(".woocommerce-breadcrumb a:nth-child(4)").text();
 
-     item[i].product_type = categories[0];
+    if(item[i].product_type.length == 0)
+    {
+        item[i].product_type = null;
+    }
 
     //colors
     item[i].colors = $('.woocommerce-product-attributes-item--attribute_pa_colors').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
- 
+    //if color is empty set solors to empty array
+    if(item[i].colors[0] == "")
+    {
+        item[i].colors = [];
+    }
+
     //price
     item[i].original_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span > bdi').text().replace('$','').replace('.','');
-      
+    
+    if(item[i].original_price.length == 0)
+    {
+        item[i].original_price =  $('.elementor-widget-woocommerce-product-price > div > p > span > ins > span > bdi').text().replace('$','').replace('.','');
+    }
+
     }
     return item;
 }
@@ -128,8 +150,17 @@ async function main()
     const page = await browser.newPage();
     const item_title_and_url = await scrapeMain(page);
     const item_info = await scrapeSecondary(item_title_and_url,page);
-    console.log(item_info);
-    console.log(item_info.length);
+    //console.log(item_info);
+    //console.log(item_info.length);
+    const data = JSON.stringify(item_info);
+
+    // write JSON string to a file
+    fs.writeFile('naughtygirlessentials.json', data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 }
 
 main();

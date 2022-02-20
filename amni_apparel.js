@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const fs = require('fs');
 
 const url = "https://amniapparel.com/shopnow/";
 let finalres = new Array();
@@ -68,11 +69,10 @@ async function scrapeSecondary(item,page)
         item[i].variants = Object.values(v).map(elem => {
            const id = elem.variation_id;
            const sku = elem.sku;
-           const grams = elem.weight;
            const price = elem.display_price;
        
            const size = elem.attributes.attribute_pa_size;
-           //const colors = elem.attributes.attribute_pa_color;
+           const color = elem.attributes.attribute_pa_color;
        
            const position = index;
             index++;
@@ -81,7 +81,7 @@ async function scrapeSecondary(item,page)
            const compare_at_price = elem.display_regular_price;
 
        
-           return{id,sku,grams,price,size,position,available, compare_at_price};
+           return{id,sku,price,size,color,position,available, compare_at_price};
             
         });
     
@@ -115,6 +115,11 @@ async function scrapeSecondary(item,page)
  
     //price
     item[i].original_price = $('.et_pb_wc_price_0_tb_body > div > p > span').find('bdi').text().replace('$','').replace('.','');
+
+    if(item[i].original_price.length == 0)
+    {
+        item[i].original_price = $('.et_pb_wc_price_0_tb_body > div > p > ins > span').find('bdi').text().replace('$','').replace('.','');
+    }
          
     }
     
@@ -128,8 +133,18 @@ async function main()
     const page = await browser.newPage();
     const item_title_and_url = await scrapeMain(page);
     const item_info = await scrapeSecondary(item_title_and_url,page);
-    console.log(item_info);
-    console.log(item_info.length);
+    //console.log(item_info);
+    //console.log(item_info.length);
+    const data = JSON.stringify(item_info);
+
+    // write JSON string to a file
+    fs.writeFile('amniapparel.json', data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
+
 }
 
 main();

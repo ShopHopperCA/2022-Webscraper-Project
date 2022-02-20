@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const fs = require('fs');
 
 const url = "https://www.soledoc.ca/product-category/womens-sandals";
 let finalres = new Array();
@@ -58,8 +59,8 @@ async function scrapeSecondary(item,page)
         let index = 1;
         item[i].variants = Object.values(v).map(elem => {
            const id = elem.variation_id;
-           const sku = elem.sku;
-           const grams = elem.weight;
+           //const sku = elem.sku;
+           //const grams = elem.weight;
            const price = elem.display_price;
        
            const size = elem.attributes['attribute_pa_women-size'];
@@ -72,7 +73,7 @@ async function scrapeSecondary(item,page)
            const compare_at_price = elem.display_regular_price;
 
        
-           return{id,sku,grams,price,size,colors,position,available, compare_at_price};
+           return{id,price,size,colors,position,available, compare_at_price};
             
         });
     
@@ -101,7 +102,13 @@ async function scrapeSecondary(item,page)
 
     //colors
     item[i].colors = $('.woocommerce-product-attributes-item--attribute_pa_color').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
- 
+    
+    //if color is empty set solors to empty array
+    if(item[i].colors[0] == "")
+    {
+        item[i].colors = [];
+    }
+
     //price
     item[i].original_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > span > bdi').text().replace('$','').replace('.','');
       
@@ -116,8 +123,17 @@ async function main()
     const page = await browser.newPage();
     const item_title_and_url = await scrapeMain(page);
     const item_info = await scrapeSecondary(item_title_and_url,page);
-    console.log(item_info);
-    console.log(item_info.length);
+    //console.log(item_info);
+    //console.log(item_info.length);
+    const data = JSON.stringify(item_info);
+
+    // write JSON string to a file
+    fs.writeFile('soledoc.json', data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 }
 
 main();

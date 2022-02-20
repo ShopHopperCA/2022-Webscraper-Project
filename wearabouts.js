@@ -1,6 +1,6 @@
-//const request = require("request-promise");
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 const clothes_url = "https://wearabouts.ca/product-category/women";
 const shoes_url = "https://wearabouts.ca/product-category/womens-footwear";
@@ -29,6 +29,7 @@ async function scrapeMain(url,page) {
 
     result = $('li.product-type-variable').map((index,element) =>{
         
+        //sleep to limit requests
         const titleElement = $(element).find(".woocommerce-loop-product__title");
         const urlElement = $(element).find(".woocommerce-loop-product__link");
         
@@ -112,7 +113,6 @@ async function scrapeSecondary(item,page)
         item[i].variants = Object.values(v).map(elem => {
            const id = elem.variation_id;
            const sku = elem.sku;
-           const grams = elem.weight;
            const price = elem.display_price;
        
            const size = elem.attributes.attribute_pa_size;
@@ -125,7 +125,7 @@ async function scrapeSecondary(item,page)
            const compare_at_price = elem.display_regular_price;
 
        
-           return{id,sku,grams,price,size,colors,position,available, compare_at_price};
+           return{id,sku,price,size,colors,position,available, compare_at_price};
             
         });
     
@@ -199,14 +199,32 @@ async function main()
     //scrape clothing
     const clothing_title_and_url = await scrapeMain(clothes_url,page);
     const clothing_info = await scrapeSecondary(clothing_title_and_url,page);
-    console.log(clothing_info);
-    console.log(clothing_info.length);
+    //console.log(clothing_info);
+    //console.log(clothing_info.length);
+    const clothes_data = JSON.stringify(clothing_info);
+
+    // write JSON string to a file
+    fs.writeFile('wearabouts_clothes.json', clothes_data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 
     //scrape shoes
     const shoes_title_and_url = await scrapeMain(shoes_url,page);
     const shoes_info = await scrapeSecondary(shoes_title_and_url,page);
-    console.log(shoes_info);
-    console.log(shoes_info.length);
+    //console.log(shoes_info);
+    //console.log(shoes_info.length);
+    const shoes_data = JSON.stringify(shoes_info);
+
+    // write JSON string to a file
+    fs.writeFile('wearabouts_shoes.json', shoes_data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 
 }
 

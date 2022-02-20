@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 const url = "https://alpacashop.ca/womens-alpaca-apparel/";
 
@@ -175,8 +176,18 @@ async function main()
     //scrape clothing
     const item_title_and_url = await scrapeMain(url,page);
     const item_info = await scrapeSecondary(item_title_and_url,page);
-    console.log(item_info);
-    console.log(item_info.length);
+    //console.log(item_info);
+    //console.log(item_info.length);
+    // convert JSON object to string
+    const data = JSON.stringify(item_info);
+
+    // write JSON string to a file
+    fs.writeFile('alpaca.json', data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 }
 
 main();

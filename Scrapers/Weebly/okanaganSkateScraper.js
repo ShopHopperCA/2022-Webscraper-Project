@@ -35,6 +35,8 @@ fetch(url, options)
             const updated_date = item.updated_date;
             const is_on_sale = item.on_sale;
             const rating = item.avg_rating_all;
+
+           // console.log(images.data);
             return {id, title, url, product_type, original_price, images, created_at, updated_date, is_on_sale, rating};
 
 

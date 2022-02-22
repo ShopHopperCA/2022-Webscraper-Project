@@ -77,32 +77,6 @@ async function getVendor(productJson) {
 async function getVariants(productJson) {
     let cleanVariants;
 
-
-
-    async function getVariantId(i) {
-       return productJson['variants'][i]['id']; 
-    }
-
-    async function getVariantSKU(i) {
-        return productJson['variants'][i]['sku'];
-    }
-
-    async function getVariantPrice(i) {
-        return productJson['variants'][i]['price']['price_money_without_currency']; //price x.xx
-    }
-
-    async function getVariantTitle(i) {
-        return productJson['variants'][i]['title'];//title
-    }
-
-    async function getVariantAvailable(i) {
-        return productJson['variants'][i]['stock']['available']//available
-    }
-
-    async function getVariantCompPrice(i) {
-        return productJson['variants'][i]['price']['compare_at_price'];//compare price
-    }
-
     async function scrubVariants() {
         cleanVariants = [];
         
@@ -127,19 +101,6 @@ async function getVariants(productJson) {
             compare_at_price : productJson['variants'][key]['price']['compare_at_price'],
         }));
 
-
-
-        // for(let i = 0; i < productJson['variants'].length; i++) {
-        //     cleanVariants[i]['id'] = await getVariantId(i);
-        //     cleanVariants[i]['sku'] = await getVariantSKU(i); 
-        //     cleanVariants[i]['price'] = await getVariantPrice(i);
-        //     cleanVariants[i]['size'] = await getVariantSize(productJson['variants'][i]['title']);//size
-        //     cleanVariants[i]['title'] = await getVariantTitle(i);
-        //     cleanVariants[i]['available'] = await getVariantAvailable(i)
-        //     cleanVariants[i]['compare_at_price'] = await getVariantCompPrice(i)
-        // }
-        
-        //console.log(cleanVariants);
         return cleanVariants;
     }
     

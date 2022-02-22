@@ -114,11 +114,14 @@ async function scrapeSecondary(item,page)
     item[i].colors = $('.woocommerce-product-attributes-item--attribute_pa_color').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
  
     //price
-    item[i].original_price = $('.et_pb_wc_price_0_tb_body > div > p > span').find('bdi').text().replace('$','').replace('.','');
+    item[i].compare_at_price = $('.et_pb_wc_price_0_tb_body > div > p > span').find('bdi').text().replace('$','').replace('.','');
+
+    item[i].original_price = item[i].compare_at_price;
 
     if(item[i].original_price.length == 0)
     {
         item[i].original_price = $('.et_pb_wc_price_0_tb_body > div > p > ins > span').find('bdi').text().replace('$','').replace('.','');
+        item[i].compare_at_price = $('.et_pb_wc_price_0_tb_body > div > p > del > span').find('bdi').text().replace('$','').replace('.','');
     }
          
     }
@@ -133,17 +136,10 @@ async function main()
     const page = await browser.newPage();
     const item_title_and_url = await scrapeMain(page);
     const item_info = await scrapeSecondary(item_title_and_url,page);
-    //console.log(item_info);
-    //console.log(item_info.length);
+
     const data = JSON.stringify(item_info);
 
-    // write JSON string to a file
-    fs.writeFile('amniapparel.json', data, (err) => {
-        if (err) {
-            throw err;
-        }
-        console.log("JSON data is saved.");
-    });
+    await writeJSOn("amni_apparel.json",data);
 
 }
 
@@ -168,4 +164,15 @@ async function get_pagination_end(url,page)
     const last_page = $(".page-numbers li:nth-last-child(2)").text();
 
     return last_page;
+}
+
+//write json file
+async function writeJSOn(filename, data)
+{
+     fs.writeFile(filename, data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 }

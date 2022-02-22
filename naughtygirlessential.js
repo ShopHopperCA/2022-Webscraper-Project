@@ -2,10 +2,14 @@ const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const fs = require('fs');
 
-const url = "https://naughtygirlessentials.com/product-category/clothing";
+const clothing_url = "https://naughtygirlessentials.com/product-category/clothing";
+const lingerie_url = "https://naughtygirlessentials.com/product-category/lingerie";
+const bra_url = "https://naughtygirlessentials.com/product-category/bras/";
+const underwear_url = "https://naughtygirlessentials.com/product-category/panties/";
+
 let finalres = new Array();
 
-async function scrapeMain(page) {
+async function scrapeMain(url,page) {
     
     let result;
     
@@ -53,11 +57,6 @@ async function scrapeSecondary(item,page)
         //scrape vendor
         item[i].vendor = $('.elementor-post-info__terms-list-item').text();
 
-        if(item[i].vendor == "")
-        {
-            item[i].vendor = null;
-        }
-
         //scrape tags
         let tags = [];
         $(".tagged_as").find('a').each((index,element) => 
@@ -82,7 +81,7 @@ async function scrapeSecondary(item,page)
 
            if(colors == undefined && metal_color == undefined)
            {
-                colors = null;
+                colors = "";
            }
            else if(colors == undefined && metal_color != undefined)
            {
@@ -118,11 +117,6 @@ async function scrapeSecondary(item,page)
     //product_type
     item[i].product_type = $(".woocommerce-breadcrumb a:nth-child(4)").text();
 
-    if(item[i].product_type.length == 0)
-    {
-        item[i].product_type = null;
-    }
-
     //colors
     item[i].colors = $('.woocommerce-product-attributes-item--attribute_pa_colors').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
     //if color is empty set solors to empty array
@@ -131,12 +125,20 @@ async function scrapeSecondary(item,page)
         item[i].colors = [];
     }
 
-    //price
-    item[i].original_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span > bdi').text().replace('$','').replace('.','');
+    //prices
+    item[i].compare_at_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span > bdi').text().replace('$','').replace('.','');
+
+    item[i].original_price = item[i].compare_at_price;
     
     if(item[i].original_price.length == 0)
     {
-        item[i].original_price =  $('.elementor-widget-woocommerce-product-price > div > p > span > ins > span > bdi').text().replace('$','').replace('.','');
+        item[i].original_price =  $('.elementor-widget-woocommerce-product-price > div > p > span > ins > span > bdi').text().replaceAll('$','').replaceAll('.','');
+        item[i].compare_at_price = $(".elementor-widget-woocommerce-product-price > div > p > span > del > span > bdi").text().replaceAll('$','').replaceAll('.','');
+    }
+    else if(item[i].original_price.length > 0 && item[i].original_price.indexOf('$')>-1)
+    {
+        item[i].original_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span:nth-child(1) > bdi').text().replaceAll('$','').replaceAll('.','');;
+        item[i].compare_at_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span:nth-child(2) > bdi').text().replaceAll('$','').replaceAll('.','');
     }
 
     }
@@ -148,25 +150,23 @@ async function main()
 {
     const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage();
-    const item_title_and_url = await scrapeMain(page);
-    const item_info = await scrapeSecondary(item_title_and_url,page);
-    //console.log(item_info);
-    //console.log(item_info.length);
-    const data = JSON.stringify(item_info);
 
-    // write JSON string to a file
-    fs.writeFile('naughtygirlessentials.json', data, (err) => {
-        if (err) {
-            throw err;
-        }
-        console.log("JSON data is saved.");
-    });
+    //scrape products
+    const clothing_title_and_url = await scrapeMain(clothing_url,page);
+    const lingerie_title_and_url = await scrapeMain(lingerie_url,page);
+    const bra_title_and_url = await scrapeMain(bra_url,page);
+    const uw_title_and_url = await scrapeMain(underwear_url,page);
+    const products_info = await scrapeSecondary(uw_title_and_url,page);
+    const data = JSON.stringify(products_info);
+
+    await writeJSOn("nge.json",data);
+  
 }
 
 main();
 
 
-
+//---------------------------------------------------utility functions
 //limit number of requests
 async function sleep(miliseconds)
 {
@@ -190,4 +190,15 @@ async function get_pagination_end(url,page)
     }
 
     return last_page;
+}
+
+//write json file
+async function writeJSOn(filename, data)
+{
+     fs.writeFile(filename, data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 }

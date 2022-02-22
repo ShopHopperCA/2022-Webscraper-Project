@@ -96,7 +96,7 @@ async function scrapeSecondary(item,page)
         //vendor
         if(vendor_index == undefined)
         {
-            item[i].vendor = "N/A";
+            item[i].vendor = "";
         }
         else
         {
@@ -162,8 +162,15 @@ async function scrapeSecondary(item,page)
     item[i].colors = $('.woocommerce-product-attributes-item--attribute_pa_color').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
  
     //price
-    const price = $('div.summary.entry-summary > p > span > bdi').text().replace('$','').replace('.','');
-    item[i].original_price = price;
+    item[i].compare_at_price = $('div.summary.entry-summary > p > span > bdi').text().replace('$','').replace('.','');
+    
+    item[i].original_price = item[i].compare_at_price;
+
+    if(item[i].original_price.length == 0)
+    {
+        item[i].original_price = $('div.summary.entry-summary > p > ins > span > bdi').text().replace('$','').replace('.','');
+        item[i].compare_at_price = $('div.summary.entry-summary > p > del > span > bdi').text().replace('$','').replace('.','');
+    }
       
     }
 
@@ -198,34 +205,23 @@ async function main()
 
     //scrape clothing
     const clothing_title_and_url = await scrapeMain(clothes_url,page);
-    const clothing_info = await scrapeSecondary(clothing_title_and_url,page);
-    //console.log(clothing_info);
-    //console.log(clothing_info.length);
-    const clothes_data = JSON.stringify(clothing_info);
-
-    // write JSON string to a file
-    fs.writeFile('wearabouts_clothes.json', clothes_data, (err) => {
-        if (err) {
-            throw err;
-        }
-        console.log("JSON data is saved.");
-    });
-
-    //scrape shoes
     const shoes_title_and_url = await scrapeMain(shoes_url,page);
-    const shoes_info = await scrapeSecondary(shoes_title_and_url,page);
-    //console.log(shoes_info);
-    //console.log(shoes_info.length);
-    const shoes_data = JSON.stringify(shoes_info);
+    const items_info = await scrapeSecondary(shoes_title_and_url,page);
+    const data = JSON.stringify(items_info);
 
-    // write JSON string to a file
-    fs.writeFile('wearabouts_shoes.json', shoes_data, (err) => {
-        if (err) {
-            throw err;
-        }
-        console.log("JSON data is saved.");
-    });
+    await writeJSOn("wearabouts.json",data);
 
 }
 
 main();
+
+//write json file
+async function writeJSOn(filename, data)
+{
+     fs.writeFile(filename, data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
+}

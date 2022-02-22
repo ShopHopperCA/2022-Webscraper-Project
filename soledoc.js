@@ -110,7 +110,14 @@ async function scrapeSecondary(item,page)
     }
 
     //price
-    item[i].original_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > span > bdi').text().replace('$','').replace('.','');
+    item[i].compare_at_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > span > bdi').text().replace('$','').replace('.','');
+    item[i].original_price = item[i].compare_at_price;
+
+    if(item[i].original_price.length == 0)
+    {
+        item[i].original_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > ins > span > bdi').text().replace('$','').replace('.','');
+        item[i].compare_at_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > del > span > bdi').text().replace('$','').replace('.','');
+    }
       
     }
     return item;
@@ -123,23 +130,16 @@ async function main()
     const page = await browser.newPage();
     const item_title_and_url = await scrapeMain(page);
     const item_info = await scrapeSecondary(item_title_and_url,page);
-    //console.log(item_info);
-    //console.log(item_info.length);
+
     const data = JSON.stringify(item_info);
 
-    // write JSON string to a file
-    fs.writeFile('soledoc.json', data, (err) => {
-        if (err) {
-            throw err;
-        }
-        console.log("JSON data is saved.");
-    });
+    await writeJSOn("soledoc.json",data);
 }
 
 main();
 
 
-
+//-------------------------------utility functions---------------------//
 //limit number of requests
 async function sleep(miliseconds)
 {
@@ -157,4 +157,15 @@ async function get_pagination_end(url,page)
     const last_page = $(".page-numbers li:nth-last-child(2)").text();
 
     return last_page;
+}
+
+//write json file
+async function writeJSOn(filename, data)
+{
+     fs.writeFile(filename, data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
 }

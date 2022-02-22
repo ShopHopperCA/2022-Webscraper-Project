@@ -46,7 +46,7 @@ async function main() {
             data.variants = await getVariants(json);
             data.images = await getImages(json);
             data.tags = await getTags(json);
-            data.body_html = await scrapeBodyHtml(json);
+            // data.body_html = await scrapeBodyHtml(json);
             
             await result.push(data);
         }
@@ -75,7 +75,36 @@ async function getVendor(productJson) {
 }
 
 async function getVariants(productJson) {
-    return productJson['variants']
+    let cleanVariants;
+
+    async function scrubVariants() {
+        cleanVariants = [];
+        
+        async function getVariantSize(title) {
+            let variantSize;
+            let sizeString;
+        
+            title = title.split(',');
+            sizeString = title[1].replace('"', '').replace('\"', '');
+
+            variantSize = sizeString.substring(sizeString.indexOf(' ') + 1)
+            return variantSize;
+        }
+        ``
+        await Object.keys(productJson['variants']).forEach(async key => cleanVariants.push({
+            id : key,
+            sku : productJson['variants'][key]['sku'],
+            price : productJson['variants'][key]['price']['price_money_without_currency'],
+            size : await getVariantSize(productJson['variants'][key]['title']),
+            title : productJson['variants'][key]['title'],
+            available : productJson['variants'][key]['stock']['available'],
+            compare_at_price : productJson['variants'][key]['price']['compare_at_price'],
+        }));
+
+        return cleanVariants;
+    }
+    
+    return await scrubVariants();
 }
 
 async function getTags(productJson) {

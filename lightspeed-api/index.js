@@ -75,7 +75,13 @@ async function getVendor(productJson) {
 }
 
 async function getVariants(productJson) {
-    return productJson['variants']
+    let cleanVariants = [];
+
+    for(let i = 0; i < productJson['variants'].length; i++) {
+        cleanVariants[i]['id'] = productJson[i]['id'];
+    }
+
+    return cleanVariants;
 }
 
 async function getTags(productJson) {

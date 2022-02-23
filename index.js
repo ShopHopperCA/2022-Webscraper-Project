@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
+const fs = require('fs');
 
 const url = 'https://mostwantedresale.com/collections/clothing?page=';
 const url_start = url.split('/')[0] + "/" + url.split('/')[1] + "/" + url.split('/')[2];
@@ -104,7 +105,9 @@ async function extract(page)
        return {id,title,business_name,url,handle,vendor,tags,variants,images,body_html,created_at,product_type,published_at,colors,compare_at_price,original_price};
          });
 
-         console.log(final);
+         
+         const data = JSON.stringify(final);
+         await writeJSOn("mostwantedresale.json",data);
          return final;
     
 }
@@ -143,3 +146,13 @@ async function get_pagination_end(page)
 }
 
 
+//write json file
+async function writeJSOn(filename, data)
+{
+     fs.writeFile(filename, data, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
+}

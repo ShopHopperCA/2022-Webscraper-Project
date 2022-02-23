@@ -1,15 +1,12 @@
-//v = $('script[id = "wix-warmup-data"]').html();
-//v = JSON.parse(v);
-//v = v.appsWarmupData['1380b703-ce81-ff05-f115-39571d94dfcd']['productPage_CAD_sand-white-tank-top'].catalog.product;
-
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
 const tops_url = "https://www.floralfawnboutique.com/tops?page=100";
 const bottoms_url = "https://www.floralfawnboutique.com/bottoms?page=100";
-
-let finalres = [];
+const dresses_url = "https://www.floralfawnboutique.com/dresses-rompers?page=100";
+const jackets_url = "https://www.floralfawnboutique.com/jackets-1?page=100";
+const swim_url = "https://www.floralfawnboutique.com/swim?page=100";
 
 async function scrapeMain(url,page) {
     
@@ -32,7 +29,7 @@ async function scrapeMain(url,page) {
 
         const url = $(element).find('._3mKI1').attr('href');
 
-        return{title,business_name,url};
+        return{id,title,business_name,url};
     }).get();
        
   return result;
@@ -58,7 +55,7 @@ async function scrapeSecondary(item,page)
         img = product.media;
 
         //relpace placeholder id
-        item[i].index = product.id;
+        item[i].id = product.id;
         
         //vendor
         item[i].vendor = product.brand;
@@ -68,7 +65,7 @@ async function scrapeSecondary(item,page)
         //variants
         item[i].variants = Object.values(v).map(elem => {
             const id = elem.id;
-            const price = elem.formattedComparePrice.replace("C$","").replace(".","");
+            const price = product.formattedDiscountedPrice.replace("C$","").replace(".","");
 
             //size and color
             let color_index;
@@ -158,7 +155,9 @@ async function scrapeSecondary(item,page)
         }
 
         //price
-        item[i].original_price = product.formattedComparePrice.replace("C$","").replace(".","");
+        item[i].compare_at_price = product.formattedPrice.replace("C$","").replace(".","");
+
+        item[i].original_price = product.formattedDiscountedPrice.replace("C$","").replace(".","");
 
       
     }
@@ -179,21 +178,53 @@ async function main()
     const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage();
 
-    //scrape clothing
-    const item_title_and_url = await scrapeMain(tops_url,page);
-    const item_info = await scrapeSecondary(item_title_and_url,page);
-    //console.log(item_info);
-    //console.log(item_info.length);
-    // convert JSON object to string
-    const data = JSON.stringify(item_info);
+    //scrape tops
+    const tops_title_and_url = await scrapeMain(tops_url,page);
+    const tops_info = await scrapeSecondary(tops_title_and_url,page);
+    const data_t = JSON.stringify(tops_info);
 
-    // write JSON string to a file
-    fs.writeFile('floralfawn.json', data, (err) => {
+    await writeJSOn("floralfawn_tops.json",data_t);
+
+    //scrape bottoms
+    const bottoms_title_and_url = await scrapeMain(bottoms_url,page);
+    const bottoms_info = await scrapeSecondary(bottoms_title_and_url,page);
+    const data_b = JSON.stringify(bottoms_info);
+
+    await writeJSOn("floralfawn_bottoms.json",data_b);
+
+    //scrape jackets
+    const jackets_title_and_url = await scrapeMain(jackets_url,page);
+    const jackets_info = await scrapeSecondary(jackets_title_and_url,page);
+    const data_j = JSON.stringify(jackets_info);
+
+    await writeJSOn("floralfawn_jackets.json",data_j);
+
+    //scrape dresses
+    const dresses_title_and_url = await scrapeMain(dresses_url,page);
+    const dresses_info = await scrapeSecondary(dresses_title_and_url,page);
+    const data_d = JSON.stringify(dresses_info);
+
+    await writeJSOn("floralfawn_dresses.json",data_d);
+
+    //scrape swimwear
+    const swim_title_and_url = await scrapeMain(swim_url,page);
+    const swim_info = await scrapeSecondary(swim_title_and_url,page);
+    const data_s = JSON.stringify(swim_info);
+
+    await writeJSOn("floralfawn_swim.json",data_s);
+}
+
+main();
+
+
+//------------------------------utility functions---------------------------------------//
+//write json file
+async function writeJSOn(filename, data)
+{
+     fs.writeFile(filename, data, (err) => {
         if (err) {
             throw err;
         }
         console.log("JSON data is saved.");
     });
 }
-
-main();

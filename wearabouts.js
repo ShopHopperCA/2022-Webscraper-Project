@@ -113,16 +113,34 @@ async function scrapeSecondary(item,page)
         item[i].variants = Object.values(v).map(elem => {
            const id = elem.variation_id;
            const sku = elem.sku;
-           const price = elem.display_price;
+           let price = elem.display_price.toString().replace(".","");
+            
+           if(elem.display_price.toString().indexOf(".") == -1)
+           {
+
+                price = price + "00";
+           }
+       
        
            const size = elem.attributes.attribute_pa_size;
-           const colors = elem.attributes.attribute_pa_color;
+           let colors = elem.attributes.attribute_pa_color;
+
+           if(colors == undefined)
+           {
+                colors = "";
+           }
        
            const position = index;
             index++;
        
            const available = elem.is_in_stock;
-           const compare_at_price = elem.display_regular_price;
+           let compare_at_price = elem.display_regular_price.toString().replace(".","");
+
+           if(elem.display_regular_price.toString().indexOf(".") == -1)
+           {
+
+               compare_at_price = compare_at_price + "00";
+           }
 
        
            return{id,sku,price,size,colors,position,available, compare_at_price};

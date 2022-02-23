@@ -67,24 +67,41 @@ async function scrapeSecondary(item,page)
         const v = JSON.parse($(".cart").attr("data-product_variations"));
         let index = 1;
         item[i].variants = Object.values(v).map(elem => {
-           const id = elem.variation_id;
-           const sku = elem.sku;
-           const price = elem.display_price;
-       
-           const size = elem.attributes.attribute_pa_size;
-           const color = elem.attributes.attribute_pa_color;
-       
-           const position = index;
-            index++;
-       
-           const available = elem.is_in_stock;
-           const compare_at_price = elem.display_regular_price;
-
-       
-           return{id,sku,price,size,color,position,available, compare_at_price};
+            const id = elem.variation_id;
+            const sku = elem.sku;
+            let price = elem.display_price.toString().replace(".","");
             
-        });
-    
+            if(elem.display_price.toString().indexOf(".") == -1)
+            {
+ 
+                 price = price + "00";
+            }
+        
+            const size = elem.attributes.attribute_pa_size;
+            let color = elem.attributes.attribute_pa_color;
+ 
+            if(color == undefined)
+            {
+                 color = "";
+            }
+        
+            const position = index;
+             index++;
+        
+            const available = elem.is_in_stock;
+            let compare_at_price = elem.display_regular_price.toString().replace(".","");
+
+            if(elem.display_regular_price.toString().indexOf(".") == -1)
+            {
+ 
+                compare_at_price = compare_at_price + "00";
+            }
+ 
+        
+            return{id,sku,price,size,color,position, available, compare_at_price};
+             
+         });
+                
         //images
         item[i].images = $('.woocommerce-product-gallery__image').map((index,element) =>{
             

@@ -2,8 +2,8 @@ const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const fs = require('fs');
 
-const clothing_url = "https://naughtygirlessentials.com/product-category/clothing";
-const lingerie_url = "https://naughtygirlessentials.com/product-category/lingerie";
+const clothing_url = "https://naughtygirlessentials.com/product-category/clothing/";
+const lingerie_url = "https://naughtygirlessentials.com/product-category/lingerie/";
 const bra_url = "https://naughtygirlessentials.com/product-category/bras/";
 const underwear_url = "https://naughtygirlessentials.com/product-category/panties/";
 
@@ -73,7 +73,13 @@ async function scrapeSecondary(item,page)
         let index = 1;
         item[i].variants = Object.values(v).map(elem => {
            const id = elem.variation_id;
-           const price = elem.display_price;
+           let price = elem.display_price.toString().replace(".","");
+            
+           if(elem.display_price.toString().indexOf(".") == -1)
+           {
+
+                price = price + "00";
+           }
        
            const size = elem.attributes.attribute_pa_sizes;
            let colors = elem.attributes.attribute_pa_colors;
@@ -92,7 +98,13 @@ async function scrapeSecondary(item,page)
             index++;
        
            const available = elem.is_in_stock;
-           const compare_at_price = elem.display_regular_price;
+           let compare_at_price = elem.display_regular_price.toString().replace(".","");
+
+           if(elem.display_regular_price.toString().indexOf(".") == -1)
+           {
+
+               compare_at_price = compare_at_price + "00";
+           }
 
        
            return{id,price,size,colors,position,available, compare_at_price};

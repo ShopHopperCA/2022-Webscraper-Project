@@ -81,8 +81,10 @@ async function scrapeSecondary(item,page)
             colors.push(c);
         }); 
 
+        const price = $('div.productView-price > div > span').text().replace('$','').replace('.','');
+
         //variants
-        item[i].variants = await get_variants(item[i].id, colors, sizes) 
+        item[i].variants = await get_variants(price, colors, sizes) 
     
         //images
         item[i].images = $('.productView-thumbnail').map((index,element) =>{
@@ -104,7 +106,7 @@ async function scrapeSecondary(item,page)
     item[i].colors = colors;
  
     //price
-    const price = $('div.productView-price > div > span').text().replace('$','').replace('.','');
+    item[i].compare_at_price = price;
     item[i].original_price = price;
       
     }
@@ -132,16 +134,20 @@ async function get_pagination_end(url,page)
     return last_page;
 }
 
-async function get_variants(pid,colors,sizes)
+async function get_variants(price,colors,sizes)
 {
     let variants=[];
+    //website only shows available products
+    const available = true;
+    //does not show onsale or not so assume compare_at same as price
+    const compare_at_price = price;
 
     if(colors.length > 0 && sizes.length == 0)
     {
         for(var i = 0; i < colors.length; i++){
         const color = colors[i];
         const size = null;
-        variants.push({size,color});}
+        variants.push({price,size,color,available,compare_at_price});}
     }
 
     else if(colors.length == 0 && sizes.length > 0)
@@ -149,7 +155,7 @@ async function get_variants(pid,colors,sizes)
 	    for(var i = 0; i < sizes.length; i++){
     	    	const color = null;
     		    const size = sizes[i];
-    		    variants.push({size,color});}
+    		    variants.push({price,size,color,available,compare_at_price});}
     }
 
     else if(colors.length > 0 && sizes.length > 0)
@@ -158,7 +164,7 @@ async function get_variants(pid,colors,sizes)
     		    const size = sizes[i];
     		    for(var j = 0; j < colors.length; j++){
     			    const color = colors[j];
-    		    	variants.push({size,color});
+    		    	variants.push({price,size,color,available,compare_at_price});
 		    }
 	    }
     }
@@ -176,8 +182,7 @@ async function main()
     //scrape clothing
     const item_title_and_url = await scrapeMain(url,page);
     const item_info = await scrapeSecondary(item_title_and_url,page);
-    //console.log(item_info);
-    //console.log(item_info.length);
+
     // convert JSON object to string
     const data = JSON.stringify(item_info);
 

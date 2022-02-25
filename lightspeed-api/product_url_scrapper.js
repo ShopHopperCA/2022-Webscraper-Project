@@ -77,8 +77,6 @@ async function scrapeProductUrls(site) {
             
             for(var j = 0; j < productListLength; j++) {
                     productElement = await page$(site.productListSelector).children().eq(j);
-                    //console.log(productElement.text());
-                    //console.log("LENGTH: " + productListLength);
                     productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
                     
                     let html = await scrapeBodyHtml(productUrl, site);
@@ -93,7 +91,7 @@ async function scrapeProductUrls(site) {
             }
         } 
     }
-    // console.log(body_html);
+    
     return product_urls;
 }
 

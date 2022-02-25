@@ -20,6 +20,8 @@ let productListLength = 0;
 let page$;
 let pageHtml;
 
+let body_html = {};
+
 /* SCRAPER FUNCTIONS */
 
 
@@ -64,31 +66,34 @@ async function scrapeProductUrls(site) {
             pageHtml = await request.get(pageUrl);
             page$ = cheerio.load(pageHtml);
     
-            if(site.removeNodes) {
+            if(site.removeNodes) 
                 removeNodes(page$, site.removeNodes);
-            }
             
-            if(site.productItemSelector)
+            if(site.productItemSelector) 
                 productItemSelector = site.productItemSelector
             
-            productListLength = await page$(site.productListSelector).children(productItemSelector).length;
-            //console.log(page$(site.productListSelector).children())
 
+            productListLength = await page$(site.productListSelector).children(productItemSelector).length;
+            
             for(var j = 0; j < productListLength; j++) {
-                productElement = await page$(site.productListSelector).children().eq(j);
-                //console.log(productElement.text());
-                //console.log("LENGTH: " + productListLength);
-                productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
-                productUrl = productUrl.replace('.html', '.ajax');
-                
-                console.log(productUrl);
-                
-                product_urls.push(productUrl);
-                
+                    productElement = await page$(site.productListSelector).children().eq(j);
+                    //console.log(productElement.text());
+                    //console.log("LENGTH: " + productListLength);
+                    productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
+                    
+                    let html = await scrapeBodyHtml(productUrl, site);
+                    body_html[productUrl] = html;
+                    
+                    productUrl = productUrl.replace('.html', '.ajax');
+                    console.log(productUrl);
+                    
+                    
+                    product_urls.push(productUrl);
+                    
             }
         } 
     }
-
+    // console.log(body_html);
     return product_urls;
 }
 
@@ -98,6 +103,14 @@ async function removeNodes(page$, nodes) {
     });
 }
 
+async function scrapeBodyHtml(productUrl, site) {
+    const html = await request.get(productUrl);
+    const $ = await cheerio.load(html);
+    
+    let bodyHtml = $(site.bodyHtmlSelector).prop('outerHTML');
+
+    return bodyHtml;
+}
 /* UTILITY FUNCTIONS */
 
 //Stops the program for a specified number of seconds
@@ -106,4 +119,4 @@ async function sleep(miliseconds)
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 }
 
-module.exports = {scrapeProductUrls: scrapeProductUrls}
+module.exports = {scrapeProductUrls: scrapeProductUrls, body_html}

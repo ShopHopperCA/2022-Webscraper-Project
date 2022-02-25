@@ -57,7 +57,7 @@ async function main() {
     await console.log("Number of items scraped: " + result.length);
 
     //Write to output file
-    fs.writeFileSync('./outputJson.json', JSON.stringify(result));
+    fs.writeFileSync('./outputJson.json', JSON.stringify(result, null, 4));
     
 }
 

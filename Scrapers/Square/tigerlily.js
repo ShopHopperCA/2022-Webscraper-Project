@@ -2,10 +2,10 @@ const fetch = require('node-fetch');
 let count = 0;
 let currentPage = 1;
 var flag = true;
-//var baseUrl = `https://cdn5.editmysite.com/app/store/api/v17/editor/users/131535993/sites/542536437781936289/products?page=${currentPage}&per_page=180&sort_by=popularity_score&sort_order=desc&include=images,media_files&excluded_fulfillment=dine_in`; //from insomnia
-let baseUrl=`https://cdn5.editmysite.com/app/store/api/v17/editor/users/131535993/sites/542536437781936289/products?page=${currentPage}&per_page=180&sort_by=popularity_score&sort_order=desc&categories[]=11ea7aa7c1810cefae500cc47a2ae330&include=images,media_files&excluded_fulfillment=dine_in`; //from cat
-//let baseUrl = "https://cdn5.editmysite.com/app/store/api/v17/editor/users/131535993/sites/542536437781936289/products?page=1&per_page=60&sort_by=created_date&sort_order=desc&include=images,media_files&preferred_item_order_ids=298,297,296,295,294,293,292,291,290,289,288,287,286,285,284,283,282,281,280,279,278,277,275,274,273,272,271,270,269,268,267,266,265,264,263,262,261,260,259,258,257,256,255,252,251,250,249,248,247,246,244,242,241,240,239,238,237,235,234,233,232,230,222,208,205,197,194,182,180,179,176,175,174,173,171,166,164,161,156,153,152,151,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109&excluded_fulfillment=dine_in"
+let baseUrl=`https://cdn5.editmysite.com/app/store/api/v17/editor/users/132063100/sites/322749464172055185/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&excluded_fulfillment=dine_in&include=images,media_files`; //from cat
 var url;
+
+var siteUrl = 'https://shoptigerlilyclothing.square.site/'
 
 
 async function getProductPages(url) {
@@ -73,5 +73,3 @@ async function getProductPages(url) {
 
 getProductPages(baseUrl);
 
-
-//things to change = BASEURL

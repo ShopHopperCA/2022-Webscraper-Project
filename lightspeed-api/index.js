@@ -22,6 +22,8 @@ const result = [];
 const product_urls = [];
 const body_html = [];
 
+console.time("execution")
+
 async function main() {
 
     for (var i = 0; i < so.SITE_OBJECTS.length; i++) {
@@ -43,6 +45,7 @@ async function main() {
             data.description = await getDescription(json);
             data.vendor = await getVendor(json);
             data.price = await getPrice(json);
+            data.compare_at_price = await getCompareAtPrice(json);
             data.available = await getInStock(json);
             data.variants = await getVariants(json);
             data.images = await getImages(json);
@@ -58,7 +61,7 @@ async function main() {
 
     //Write to output file
     fs.writeFileSync('./outputJson.json', JSON.stringify(result, null, 4));
-    
+    console.timeEnd("execution");
 }
 
 /* API FUNCTIONS */
@@ -99,7 +102,7 @@ async function getVariants(productJson) {
             size : await getVariantSize(productJson['variants'][key]['title']),
             title : productJson['variants'][key]['title'],
             available : productJson['variants'][key]['stock']['available'],
-            compare_at_price : productJson['variants'][key]['price']['compare_at_price'],
+            compare_at_price : productJson['variants'][key]['price']['price_old_money_without_currency'],
         }));
 
         return cleanVariants;
@@ -126,6 +129,18 @@ async function getPrice(productJson) {
     priceString = priceString.replace('.', '');
     
     return priceString;
+}
+
+async function getCompareAtPrice(productJson) {
+    try {
+        let comparePriceString = productJson['price']['price_old_money_without_currency']    
+        comparePriceString = comparePriceString.replace('.', '');
+
+        return comparePriceString;
+    } catch (e) {
+        console.log("This product does not have a compare price")
+        return;
+    }
 }
 
 async function getDescription(productJson) {

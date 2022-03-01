@@ -19,7 +19,8 @@ const so = require('./site_objects');
 const url_scraper = require('./product_url_scrapper');
 
 const result = [];
-const product_urls = []
+const product_urls = [];
+const body_html = [];
 
 async function main() {
 
@@ -46,7 +47,7 @@ async function main() {
             data.variants = await getVariants(json);
             data.images = await getImages(json);
             data.tags = await getTags(json);
-            // data.body_html = await scrapeBodyHtml(json);
+            data.body_html = await getBodyHtml(json);
             
             await result.push(data);
         }
@@ -56,7 +57,7 @@ async function main() {
     await console.log("Number of items scraped: " + result.length);
 
     //Write to output file
-    fs.writeFileSync('./outputJson.json', JSON.stringify(result));
+    fs.writeFileSync('./outputJson.json', JSON.stringify(result, null, 4));
     
 }
 
@@ -139,6 +140,7 @@ async function getUrl(productJson) {
     return productJson['url']
 }
 
+
 /* UTILITY FUNCTIONS */
 
 async function scrapeBusinessName(productJson) {
@@ -150,14 +152,10 @@ async function scrapeBusinessName(productJson) {
 
 }
 
-async function scrapeBodyHtml(productJson) {
-    const url = await getUrl(productJson);
-    const html = await request.get(url);
-    const $ = await cheerio.load(html);
+async function getBodyHtml(productJson) {
+    let url = await getUrl(productJson)
     
-    let bodyHtml = $("body").html();
-
-    return bodyHtml;
+    return url_scraper.body_html[url];
 }
 
 //Stops the program for a specified number of seconds

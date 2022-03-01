@@ -6,26 +6,28 @@ that the function needs to find the product urls for a given site.
 */
 const SITE_OBJECTS = [
     FOSSELLOS = {
-        baseUrl : ["https://www.fossellos.com/shop/tops/",
-                    "https://www.fossellos.com/shop/tanks/",
-                    "https://www.fossellos.com/shop/tees/",
-                    "https://www.fossellos.com/shop/sweatshirts/",
-                    "https://www.fossellos.com/shop/knitwear/",
-                    "https://www.fossellos.com/shop/denim/",
-                    "https://www.fossellos.com/shop/pants/",
-                    "https://www.fossellos.com/shop/dresses-skirts/",
-                    "https://www.fossellos.com/shop/jackets/",
-                    "https://www.fossellos.com/shop/footwear/",
-                    "https://www.fossellos.com/shop/belts/",
-                    "https://www.fossellos.com/shop/bags/",
-                    "https://www.fossellos.com/shop/eyewear/",
-                    "https://www.fossellos.com/shop/hats/",
-                    "https://www.fossellos.com/shop/accessories/",
-                    "https://www.fossellos.com/shop/jewelry/"
-                ],
+        baseUrl : [
+            "https://www.fossellos.com/shop/tops/",
+            "https://www.fossellos.com/shop/tanks/",
+            "https://www.fossellos.com/shop/tees/",
+            "https://www.fossellos.com/shop/sweatshirts/",
+            "https://www.fossellos.com/shop/knitwear/",
+            "https://www.fossellos.com/shop/denim/",
+            "https://www.fossellos.com/shop/pants/",
+            "https://www.fossellos.com/shop/dresses-skirts/",
+            "https://www.fossellos.com/shop/jackets/",
+            "https://www.fossellos.com/shop/footwear/",
+            "https://www.fossellos.com/shop/belts/",
+            "https://www.fossellos.com/shop/bags/",
+            "https://www.fossellos.com/shop/eyewear/",
+            "https://www.fossellos.com/shop/hats/",
+            "https://www.fossellos.com/shop/accessories/",
+            "https://www.fossellos.com/shop/jewelry/"
+        ],
         paginationSelector : "div.pagination > ul > li", 
         productListSelector : "div.products-list", 
         productLinkSelector : ".product-image-wrapper",
+        bodyHtmlSelector : "div.product-description"
     },
 
     RED_TOP_FOOTWEAR = {
@@ -33,7 +35,8 @@ const SITE_OBJECTS = [
         paginationSelector : "ul.right > li", 
         productListSelector : "div.col-md-9", 
         productLinkSelector : "a.title",
-        removeNodes : [".clearfix",]
+        removeNodes : [".clearfix",],
+        bodyHtmlSelector : ".clearfix"
     },
 
     ENVY_APPAREL = {
@@ -41,6 +44,7 @@ const SITE_OBJECTS = [
         paginationSelector : "div.pagination > ul > li", 
         productListSelector : "div.products-list", 
         productLinkSelector : ".product-image-wrapper",
+        bodyHtmlSelector : "div.product-description"
     },
 
     HONEST_BOUTIQUE = {
@@ -48,13 +52,15 @@ const SITE_OBJECTS = [
         paginationSelector : "div.pagination > ul > li", 
         productListSelector : "div.products-list", 
         productLinkSelector : ".product-image-wrapper",
+        bodyHtmlSelector : "div.product-description"
     },
 
     ARTFUL_HAND = {
         baseUrl : ["https://www.theartfulhandstores.com/clothing/"],
         paginationSelector : '',
         productListSelector : 'ul.list-collection',
-        productLinkSelector : 'h3.mobile-nobrand > a'
+        productLinkSelector : 'h3.mobile-nobrand > a',
+        bodyHtmlSelector : ".tabs-a"
 
     },
 
@@ -74,7 +80,8 @@ const SITE_OBJECTS = [
         productListSelector : ".col-md-9 > div:nth-child(1)",
         productLinkSelector : "div.product-block-image > a",
         productItemSelector : ".col-md-4",
-        removeNodes : ["div.cf", ".col-md-9 > div:nth-child(1) > script:nth-child(4)",]
+        removeNodes : ["div.cf", ".col-md-9 > div:nth-child(1) > script:nth-child(4)",],
+        bodyHtmlSelector : ".product-content"
     }
 ]
 

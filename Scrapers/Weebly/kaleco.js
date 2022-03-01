@@ -58,13 +58,13 @@ async function getProductPages(url) {
             });
 
             console.log(result);
-            //console.log(count);
+            console.log(count);
 
             if(flag){
                 getProductPages(url);
             }
 
-            console.log(count);
+          //  console.log(count);
 
         })
         .catch(err => console.error('error:' + err));
@@ -72,6 +72,3 @@ async function getProductPages(url) {
 
 
 getProductPages(baseUrl);
-
-
-//things to change = BASEURL

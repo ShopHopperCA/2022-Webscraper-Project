@@ -41,6 +41,7 @@ async function getProductPages(url) {
                 const updated_date = item.updated_date;
                 const is_on_sale = item.on_sale;
                 const rating = item.avg_rating_all;
+
                 return {
                     id,
                     title,

@@ -78,7 +78,7 @@ async function scrapeProductUrls(site) {
             for(var j = 0; j < productListLength; j++) {
                     productElement = await page$(site.productListSelector).children().eq(j);
                     productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
-                    
+                    console.log(productUrl);
                     let html = await scrapeBodyHtml(productUrl, site);
                     body_html[productUrl] = html;
                     

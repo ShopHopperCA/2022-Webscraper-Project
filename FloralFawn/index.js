@@ -8,6 +8,7 @@ const dresses_url = "https://www.floralfawnboutique.com/dresses-rompers?page=100
 const jackets_url = "https://www.floralfawnboutique.com/jackets-1?page=100";
 const swim_url = "https://www.floralfawnboutique.com/swim?page=100";
 
+finalres = [];
 async function scrapeMain(url,page) {
     
     let result;
@@ -29,10 +30,11 @@ async function scrapeMain(url,page) {
 
         const url = $(element).find('._3mKI1').attr('href');
 
+        finalres.push({id,title,business_name,url});
         return{id,title,business_name,url};
     }).get();
        
-  return result;
+  return finalres;
 }
 
 async function scrapeSecondary(item,page)
@@ -178,40 +180,17 @@ async function main()
     const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage();
 
-    //scrape tops
     const tops_title_and_url = await scrapeMain(tops_url,page);
-    const tops_info = await scrapeSecondary(tops_title_and_url,page);
-    const data_t = JSON.stringify(tops_info);
-
-    await writeJSOn("floralfawn_tops.json",data_t);
-
-    //scrape bottoms
     const bottoms_title_and_url = await scrapeMain(bottoms_url,page);
-    const bottoms_info = await scrapeSecondary(bottoms_title_and_url,page);
-    const data_b = JSON.stringify(bottoms_info);
-
-    await writeJSOn("floralfawn_bottoms.json",data_b);
-
-    //scrape jackets
     const jackets_title_and_url = await scrapeMain(jackets_url,page);
-    const jackets_info = await scrapeSecondary(jackets_title_and_url,page);
-    const data_j = JSON.stringify(jackets_info);
-
-    await writeJSOn("floralfawn_jackets.json",data_j);
-
-    //scrape dresses
     const dresses_title_and_url = await scrapeMain(dresses_url,page);
-    const dresses_info = await scrapeSecondary(dresses_title_and_url,page);
-    const data_d = JSON.stringify(dresses_info);
-
-    await writeJSOn("floralfawn_dresses.json",data_d);
-
-    //scrape swimwear
     const swim_title_and_url = await scrapeMain(swim_url,page);
     const swim_info = await scrapeSecondary(swim_title_and_url,page);
-    const data_s = JSON.stringify(swim_info);
+    const cleaned_info = await removeDuplicates(swim_info)
 
-    await writeJSOn("floralfawn_swim.json",data_s);
+    const data_s = JSON.stringify(cleaned_info);
+
+    await writeJSOn("FloralFawn/floralfawn.json",data_s);
 }
 
 main();
@@ -227,4 +206,24 @@ async function writeJSOn(filename, data)
         }
         console.log("JSON data is saved.");
     });
+}
+
+//function for removing duplicate products
+async function removeDuplicates(json)
+{
+    var final = [];
+    json.forEach(function(item) {
+        var unique = true;
+        final.forEach(function(item2) {
+            if (item.id== item2.id) 
+            {
+                unique = false;
+            }
+        });
+        if (unique)
+        {
+            final.push(item);
+        }
+    });
+    return final;
 }

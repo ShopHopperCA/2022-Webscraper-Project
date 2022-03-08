@@ -104,8 +104,14 @@ async function removeNodes(page$, nodes) {
 async function scrapeBodyHtml(productUrl, site) {
     const html = await request.get(productUrl);
     const $ = await cheerio.load(html);
-    
-    let bodyHtml = $(site.bodyHtmlSelector).prop('outerHTML');
+    let bodyHtml;
+
+    try {
+        bodyHtml = $(site.bodyHtmlSelector).prop('outerHTML');
+    } catch (e) {
+        console.log(e);
+        bodyHtml = "";
+    }
 
     return bodyHtml;
 }

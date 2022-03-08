@@ -138,7 +138,6 @@ async function getCompareAtPrice(productJson) {
 
         return comparePriceString;
     } catch (e) {
-        console.log("This product does not have a compare price")
         return;
     }
 }

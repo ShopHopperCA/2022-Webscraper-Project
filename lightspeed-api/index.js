@@ -89,7 +89,7 @@ async function getVariants(productJson) {
             let sizeString;
         
             title = title.split(',');
-            sizeString = title[1].replace('"', '').replace('\"', '');
+            sizeString = title[0].replace('"', '').replace('\"', '');
 
             variantSize = sizeString.substring(sizeString.indexOf(' ') + 1)
             return variantSize;
@@ -138,7 +138,6 @@ async function getCompareAtPrice(productJson) {
 
         return comparePriceString;
     } catch (e) {
-        console.log("This product does not have a compare price")
         return;
     }
 }

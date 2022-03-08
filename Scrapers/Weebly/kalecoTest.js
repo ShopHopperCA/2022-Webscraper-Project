@@ -51,8 +51,8 @@ fetch(baseUrl, options)
 
         });
 
-        //console.log(result);
-        //console.log(`Total number of items scraped: ${count}`);
+        console.log(result);
+        console.log(`Total number of items scraped: ${count}`);
 
     })
 
@@ -79,7 +79,12 @@ fetch(baseUrl, options)
 // }
 //
 //
-// var testUrl = 'https://kaleco.ca/product/V-NeckTop/375';
+
+async function getVariants(id){
+    let productCall = `https://cdn5.editmysite.com/app/store/api/v18/editor/users/131535993/sites/542536437781936289/store-locations/11ea74fbb0ae20b2ae500cc47a2ae330/products/${id}/skus?page=1&per_page=100&include=image,media_files,product`;
+
+}
+ var testUrl = 'https://kaleco.ca/product/V-NeckTop/375';
 //
 //
 // getSizes(testUrl);

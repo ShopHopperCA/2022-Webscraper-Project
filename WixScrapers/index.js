@@ -2,11 +2,18 @@ const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-const tops_url = "https://www.floralfawnboutique.com/tops?page=100";
-const bottoms_url = "https://www.floralfawnboutique.com/bottoms?page=100";
-const dresses_url = "https://www.floralfawnboutique.com/dresses-rompers?page=100";
-const jackets_url = "https://www.floralfawnboutique.com/jackets-1?page=100";
-const swim_url = "https://www.floralfawnboutique.com/swim?page=100";
+const ffawn_tops_url = "https://www.floralfawnboutique.com/tops?page=100";
+const ffawn_bottoms_url = "https://www.floralfawnboutique.com/bottoms?page=100";
+const ffawn_dresses_url = "https://www.floralfawnboutique.com/dresses-rompers?page=100";
+const ffawn_jackets_url = "https://www.floralfawnboutique.com/jackets-1?page=100";
+const ffawn_swim_url = "https://www.floralfawnboutique.com/swim?page=100";
+const Sfox_url = "https://www.stonefoxclothing.com/shop-all-1?page=100";
+
+let c;
+let s;
+let available;
+let color_index;
+let size_index;
 
 finalres = [];
 async function scrapeMain(url,page) {
@@ -17,26 +24,24 @@ async function scrapeMain(url,page) {
     const html = await page.content();
     const $ = await cheerio.load(html);
    
-    
-
-    result = $('li[data-hook="product-list-grid-item"]').map((index,element) =>{
+    result = $("li[data-hook='product-list-grid-item']").map((index,element) =>{
         
         //placeholder id until we can get JSON from project page
         const id = index;
 
-        const title = $(element).find('div._1bfj5 > h3').text();
+        const title = $(element).find("div[data-hook= 'product-item-product-details']").find("h3").text();
 
         const business_name = $("title").text().split('|')[1].trim();
 
-        const url = $(element).find('._3mKI1').attr('href');
+        const url = $(element).find("a[data-hook='product-item-container']").attr('href');
 
         finalres.push({id,title,business_name,url});
         return{id,title,business_name,url};
     }).get();
-       
+
   return finalres;
 }
-
+       
 async function scrapeSecondary(item,page)
 {
     
@@ -48,7 +53,7 @@ async function scrapeSecondary(item,page)
         await sleep(1000);
 
         json_pindex = 'productPage_CAD_' + item[i].url.split('/')[4];
-
+        is_size_or_color = $("div[data-hook='product-options-inputs'] > div.cell:nth(0)").text();
       
         data = $('script[id = "wix-warmup-data"]').html();
         data = JSON.parse(data);
@@ -70,12 +75,16 @@ async function scrapeSecondary(item,page)
             const price = product.formattedDiscountedPrice.replace("C$","").replace(".","");
 
             //size and color
-            let color_index;
-            let size_index;
             let size;
             let color;
+          
 
-            if(elem.optionsSelections.length == 1)
+            if(elem.optionsSelections.length == 0)
+            {
+                size = null;
+                color = null;
+            }
+            else if(elem.optionsSelections.length == 1)
             {
                 size_index = elem.optionsSelections[0];
                 for(let i = 0; i < product.options[0].selections.length;i++)
@@ -90,23 +99,43 @@ async function scrapeSecondary(item,page)
             }
             else
             {
-                size_index = elem.optionsSelections[1];
-                color_index = elem.optionsSelections[0];
-
-                for(let i = 0; i < product.options[1].selections.length;i++)
+                
+                if(is_size_or_color.indexOf("Color")>-1 || is_size_or_color.indexOf("colour")>-1 ||is_size_or_color.indexOf("Colour")>-1)
                 {
-                    if(product.options[1].selections[i].id == size_index)
+                    s = 1;
+                    c = 0;
+                }
+                else
+                {
+                    s = 0;
+                    c = 1;
+                }
+
+                if($(".buttonnext1002411228__content").text() == "Out of Stock")
+                {
+                    s = 1;
+                    c = 0;
+                }
+
+                size_index = elem.optionsSelections[s];
+                color_index = elem.optionsSelections[c];
+               
+                
+                for(let i = 0; i < product.options[s].selections.length;i++)
+                {
+                    if(product.options[s].selections[i].id == size_index)
                     {
-                        size = product.options[1].selections[i].description;
+                        size = product.options[s].selections[i].description;
                     }
                 }
 
 
-                for(let i = 0; i < product.options[0].selections.length;i++)
+                for(let i = 0; i < product.options[c].selections.length;i++)
                 {
-                    if(product.options[0].selections[i].id == color_index)
+                    if(product.options[c].selections[i].id == color_index)
                     {
-                        color = product.options[0].selections[i].description;
+                        color = product.options[c].selections[i].description;
+                        
                     }
                 }
             }
@@ -114,8 +143,8 @@ async function scrapeSecondary(item,page)
             const position = index;
             index++;
             
-            let available;
-            if(elem.inventory.status == "in_stock")
+            
+            if(elem.inventory.quantity > 0)
             {
                 available = true;
             }
@@ -145,11 +174,21 @@ async function scrapeSecondary(item,page)
 
         //product_type
         item[i].product_type = product.productType;
-
+        
+        let colors_arr = [];
         //colors
         if(product.options.length == 2)
         {
-            item[i].colors = product.options[0].selections;
+            for(let i = 0; i < product.options[c].selections.length;i++){
+                {
+                    if(product.options[c].selections[i].id == color_index)
+                    {
+                        colors_arr.push(product.options[c].selections[i].description);
+                        
+                    }
+                }
+            }
+            item[i].colors = colors_arr;
         }
         else
         {
@@ -180,17 +219,18 @@ async function main()
     const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage();
 
-    const tops_title_and_url = await scrapeMain(tops_url,page);
-    const bottoms_title_and_url = await scrapeMain(bottoms_url,page);
-    const jackets_title_and_url = await scrapeMain(jackets_url,page);
-    const dresses_title_and_url = await scrapeMain(dresses_url,page);
-    const swim_title_and_url = await scrapeMain(swim_url,page);
-    const swim_info = await scrapeSecondary(swim_title_and_url,page);
-    const cleaned_info = await removeDuplicates(swim_info)
+    const tops_title_and_url = await scrapeMain(ffawn_tops_url,page);
+    const bottoms_title_and_url = await scrapeMain(ffawn_bottoms_url,page);
+    const jackets_title_and_url = await scrapeMain(ffawn_jackets_url,page);
+    const dresses_title_and_url = await scrapeMain(ffawn_dresses_url,page);
+    const swim_title_and_url = await scrapeMain(ffawn_swim_url,page);
+    const sfox_title_and_url = await scrapeMain(Sfox_url,page);
+    const items_info = await scrapeSecondary(sfox_title_and_url,page);
+    const cleaned_info = await removeDuplicates(items_info)
 
     const data_s = JSON.stringify(cleaned_info);
 
-    await writeJSOn("FloralFawn/floralfawn.json",data_s);
+    await writeJSOn("WixScrapers/wixData.json",data_s);
 }
 
 main();

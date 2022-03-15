@@ -64,39 +64,39 @@ const SITE_OBJECTS = [
 
     // },
 
-    ONE_BOARD = {
-        baseUrl : [
-            "https://www.oneboardshop.com/snow/womens-outerwear/womens-jackets/",
-            "https://www.oneboardshop.com/snow/womens-outerwear/womens-pants/",
-            "https://www.oneboardshop.com/snow/womens-outerwear/womens-one-piece-suits/",
-            "https://www.oneboardshop.com/snow/womens-outerwear/womens-bib-pants/",
-            "https://www.oneboardshop.com/snow/womens-outerwear/womens-vests/",
-            "https://www.oneboardshop.com/snow/womens-outerwear/womens-gloves/",
-            "https://www.oneboardshop.com/snow/womens-outerwear/womens-mitts/",
-            "https://www.oneboardshop.com/footwear/womens/shoes/",
-            "https://www.oneboardshop.com/footwear/womens/sandals/",
-    ],
-        paginationSelector : "div.mid-height:nth-child(2) > ul:nth-child(1) > li",
-        productListSelector : ".col-md-9 > div:nth-child(1)",
-        productLinkSelector : "div.product-block-image > a",
-        productItemSelector : ".col-md-4",
-        bodyHtmlSelector : ".product-content",
-        removeNodes : [".cf"],
-    },
-    // ATTRIDGE = {
+    // ONE_BOARD = {
     //     baseUrl : [
-    //         "https://www.attridge.ca/women/sandals/",
-    //         "https://www.attridge.ca/women/womens-tops/",
-    //         "https://www.attridge.ca/women/womens-bottoms/",
-    //         "https://www.attridge.ca/women/swim/",
-    //         "https://www.attridge.ca/women/casual-socks/",
-    //         "https://www.attridge.ca/women/headwear/",
-    //     ],
-    //     paginationSelector : 1,
-    //     productListSelector : ".list-collection",
-    //     productLinkSelector : "h3.title > a",
-    //     bodyHtmlSelector : ".module-product > div:nth-child(4) > div:nth-child(2) > p:nth-child(2)"
+    //         "https://www.oneboardshop.com/snow/womens-outerwear/womens-jackets/",
+    //         "https://www.oneboardshop.com/snow/womens-outerwear/womens-pants/",
+    //         "https://www.oneboardshop.com/snow/womens-outerwear/womens-one-piece-suits/",
+    //         "https://www.oneboardshop.com/snow/womens-outerwear/womens-bib-pants/",
+    //         "https://www.oneboardshop.com/snow/womens-outerwear/womens-vests/",
+    //         "https://www.oneboardshop.com/snow/womens-outerwear/womens-gloves/",
+    //         "https://www.oneboardshop.com/snow/womens-outerwear/womens-mitts/",
+    //         "https://www.oneboardshop.com/footwear/womens/shoes/",
+    //         "https://www.oneboardshop.com/footwear/womens/sandals/",
+    // ],
+    //     paginationSelector : "div.mid-height:nth-child(2) > ul:nth-child(1) > li",
+    //     productListSelector : ".col-md-9 > div:nth-child(1)",
+    //     productLinkSelector : "div.product-block-image > a",
+    //     productItemSelector : ".col-md-4",
+    //     bodyHtmlSelector : ".product-content",
+    //     removeNodes : [".cf"],
     // },
+    ATTRIDGE = {
+        baseUrl : [
+            // "https://www.attridge.ca/women/womens-tops/",
+            // "https://www.attridge.ca/women/sandals/",
+            "https://www.attridge.ca/women/womens-bottoms/",
+            // "https://www.attridge.ca/women/swim/",
+            // "https://www.attridge.ca/women/casual-socks/",
+            // "https://www.attridge.ca/women/headwear/",
+        ],
+        paginationSelector : 100,
+        productListSelector : ".list-collection",
+        productLinkSelector : "h3.title > a",
+        bodyHtmlSelector : "div.scroll-to-fixed-fixed > div > p"
+    },
     // STRUT_FOOTWEAR = {
     //     baseUrl : [
     //         "https://www.strutfootwear.com/footwear/shoes/",

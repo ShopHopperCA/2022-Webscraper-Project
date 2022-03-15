@@ -37,7 +37,7 @@ async function scrapeProductUrls(site) {
         let paginationEnd;
         let productUrl;
         let productElement;
-        
+        let productLoop = 0;        
         /*
             Check if paginationSelector is a string, if so, check if the element exists. If true, get the last number in pagination list, if false, paginationEnd = 1.
             If paginationSelector is a number, paginationEnd = paginationSelector.
@@ -60,6 +60,8 @@ async function scrapeProductUrls(site) {
         }
     
         for(var i = 1; i <= paginationEnd; i++) {
+            if(productLoop >= 5) break;
+
             await sleep(1000);
             let productItemSelector = "";
             pageUrl = site.baseUrl[urlIndex] + 'page' + i + '.html';
@@ -74,18 +76,28 @@ async function scrapeProductUrls(site) {
             
 
             productListLength = await page$(site.productListSelector).children(productItemSelector).length;
+
+            if(productListLength == 0) continue;
             
             for(var j = 0; j < productListLength; j++) {
                     productElement = await page$(site.productListSelector).children().eq(j);
                     productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
-                    console.log(productUrl);
+                    
+                    
+                    // console.log(productUrl);
                     let html = await scrapeBodyHtml(productUrl, site);
                     body_html[productUrl] = html;
                     
                     productUrl = productUrl.replace('.html', '.ajax');
+                    
+                    if(product_urls.includes(productUrl)){
+                        productLoop++;
+                        break;
+                    }
+
                     console.log(productUrl);
                     
-                    
+
                     product_urls.push(productUrl);
                     
             }
@@ -106,7 +118,7 @@ async function scrapeBodyHtml(productUrl, site) {
     const $ = await cheerio.load(html);
     
     let bodyHtml = $(site.bodyHtmlSelector).prop('outerHTML');
-
+    console.log(bodyHtml)
     return bodyHtml;
 }
 /* UTILITY FUNCTIONS */

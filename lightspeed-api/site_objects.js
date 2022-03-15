@@ -80,8 +80,33 @@ const SITE_OBJECTS = [
         productListSelector : ".col-md-9 > div:nth-child(1)",
         productLinkSelector : "div.product-block-image > a",
         productItemSelector : ".col-md-4",
-        removeNodes : ["div.cf", ".col-md-9 > div:nth-child(1) > script:nth-child(4)",],
-        bodyHtmlSelector : ".product-content"
+        bodyHtmlSelector : ".product-content",
+        removeNodes : [".cf"],
+    },
+    ATTRIDGE = {
+        baseUrl : [
+            "https://www.attridge.ca/women/womens-tops/",
+            "https://www.attridge.ca/women/sandals/",
+            "https://www.attridge.ca/women/womens-bottoms/",
+            "https://www.attridge.ca/women/swim/",
+            "https://www.attridge.ca/women/casual-socks/",
+            "https://www.attridge.ca/women/headwear/",
+        ],
+        paginationSelector : 100,
+        productListSelector : ".list-collection",
+        productLinkSelector : "h3.title > a",
+        bodyHtmlSelector : "div.scroll-to-fixed-fixed > div > p"
+    },
+    STRUT_FOOTWEAR = {
+        baseUrl : [
+            "https://www.strutfootwear.com/footwear/shoes/",
+            "https://www.strutfootwear.com/footwear/boots/",
+            "https://www.strutfootwear.com/footwear/sandals/",
+        ],
+        paginationSelector: "div.pagination > ul > li",
+        productListSelector: "div.products-list",
+        productLinkSelector: ".product-image-wrapper",
+        bodyHtmlSelector: "div.product-description", 
     }
 ]
 

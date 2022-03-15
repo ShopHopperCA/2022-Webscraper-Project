@@ -84,7 +84,7 @@ async function scrapeProductUrls(site) {
                     productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
                     
                     
-                    // console.log(productUrl);
+                    console.log(productUrl);
                     let html = await scrapeBodyHtml(productUrl, site);
                     body_html[productUrl] = html;
                     
@@ -118,7 +118,7 @@ async function scrapeBodyHtml(productUrl, site) {
     const $ = await cheerio.load(html);
     
     let bodyHtml = $(site.bodyHtmlSelector).prop('outerHTML');
-    console.log(bodyHtml)
+    // console.log(bodyHtml)
     return bodyHtml;
 }
 /* UTILITY FUNCTIONS */

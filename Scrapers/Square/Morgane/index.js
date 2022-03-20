@@ -1,0 +1,138 @@
+/*
+Morgane Scraper
+https://morganekelowna.square.site/s/shop
+ */
+
+const axios = require("axios");
+const chalk = require('chalk');                      // npm i chalk@2.4.1
+const baseURL = 'https://cdn5.editmysite.com/app/store/api/v17/editor/users/132504777/sites/962101679689053553/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&include=images,media_files&excluded_fulfillment=dine_in'
+const businessName = 'Morgane'
+let count = 0;
+
+
+const main = async (urlCall) =>{
+    const response = await axios(urlCall);
+    //console.log(response.data.data);
+
+    const data = await Object.values(response.data.data).map(async item =>{
+        count++;
+
+        const id = item.id;
+        const title = item.name;
+        const business_name = businessName;
+        const url = item.site_link;
+        const place_id = item.site_id;
+        //const colors = [];
+        const product_type = item.product_type;
+        const original_price = item.price.high_subunits;
+        let productId = getId(url);
+        //const sizes = await getSizes(productId);
+        const images = item.images;
+        //  const options = await getOptions(productId);
+        const created_at = item.created_date;
+        const updated_at = item.updated_date;
+        const is_on_sale = item.on_sale;
+        const rating = item.avg_rating_all;
+        const body_html = await getDescription(productId);
+
+
+        return{
+            id,
+            title,
+            url,
+            business_name,
+            place_id,
+            //colors,
+            product_type,
+            original_price,
+         //   sizes,
+            images,
+            created_at,
+            updated_at,
+            is_on_sale,
+            rating,
+            body_html
+        };
+
+    });
+
+    Promise.all(data).then(
+        value => {
+            for(var i =0; i < value.length; i++){
+                console.log(chalk.green('This is item number: ') + chalk.blue(i));
+                for(v in value[i]){
+                    // if(v == 'images' || v == 'IMAGES'){
+                    //     console.log(v);
+                    //     for(prop in value[i]['images'])
+                    //         console.log(value[i]['images'][prop])
+                    // }
+                    console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);
+                }
+            }
+        }
+    )
+    await console.log('Total number of items scraped: ' + count);
+}
+
+
+
+const getId = function(productUrl){
+    let parts = productUrl.split('/');
+    let id = parts[parts.length-1];
+
+    return id;
+}
+
+const getDescription = async (productId) => {
+    try{
+        const productCall = `https://cdn5.editmysite.com/app/store/api/v18/editor/users/132504777/sites/962101679689053553/store-locations/11eaa42c5e17a58ebaa60cc47a2b6418/products/${productId}`;
+        const response = await axios(productCall);
+        const data = response.data.data;
+        return data['short_description']
+    }catch (err){
+        console.log('error getting desription')
+    }
+}
+
+const getSizes = async (productId)=> {
+    let sizes = [];
+    try {
+        const productCall = `https://cdn5.editmysite.com/app/store/api/v18/editor/users/132504777/sites/962101679689053553/store-locations/11eaa42c5e17a58ebaa60cc47a2b6418/products/${productId}/skus?page=1&per_page=100&include=image,media_files,product`;
+        let response = await axios(productCall);
+        let data = response.data.data
+        for (p in data) {
+            if (data[p].inventory > 0) {
+                sizes.push(data[p].name);
+            }
+        }
+        return sizes;
+    }catch (err){
+        console.log('error getting sizes');
+    }
+}
+
+
+const getColors = async (productId)=>{
+    let colors = [];
+    let optionsArray;
+    try{
+        const productCall = `https://cdn5.editmysite.com/app/store/api/v18/editor/users/132504777/sites/962101679689053553/store-locations/11eaa42c5e17a58ebaa60cc47a2b6418/products/${productId}/skus?page=1&per_page=100&include=image,media_files,product`;
+        let response = await axios(productCall);
+        let data = response.data.data
+
+          let optionsData =  data['options'];
+
+            console.log(data);
+
+
+        //console.log(data);
+
+    }catch(err){
+        console.log('error getting colors')
+    }
+
+}
+let test = getId('product/la641p21-pink-c-dress-pink/684')
+//console.log(test);
+getColors(getId(test));
+//main(baseURL);

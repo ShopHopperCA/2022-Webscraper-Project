@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 let count = 0;
 let currentPage = 1;
 var flag = true;
-let baseUrl=`https://cdn5.editmysite.com/app/store/api/v17/editor/users/132504777/sites/962101679689053553/products?page=1&per_page=60&sort_by=popularity_score&sort_order=desc&include=images,media_files&excluded_fulfillment=dine_in`; //from cat
+let baseUrl=`https://cdn5.editmysite.com/app/store/api/v17/editor/users/132504777/sites/962101679689053553/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&include=images,media_files&excluded_fulfillment=dine_in`; //from cat
 var url;
 
 var siteUrl = 'https://morganekelowna.square.site/'

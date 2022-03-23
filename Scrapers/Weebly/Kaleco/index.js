@@ -1,6 +1,6 @@
 /*
 KALECO WebScraper
-
+https://www.kaleco.ca/
  */
 
 //const fetch = require('node-fetch'); // npm install node-fetch@2
@@ -63,11 +63,11 @@ const main = async (urlCall) =>{
         value => {
             for(var i =0; i < value.length; i++){
                 for(v in value[i]){
-                    if(v == 'images' || v == 'IMAGES'){
-                        console.log(v);
-                        for(prop in value[i]['images'])
-                            console.log(value[i]['images'][prop])
-                    }
+                    // if(v == 'images' || v == 'IMAGES'){
+                    //     console.log(v);
+                    //     for(prop in value[i]['images'])
+                    //         console.log(value[i]['images'][prop])
+                    // }
                     console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);
                 }
             }
@@ -76,6 +76,8 @@ const main = async (urlCall) =>{
     await console.log('Total number of items scraped from Kaleco is: ' + count);
 }
 
-main(baseURL);
+module.exports={main,baseURL};
+
+//main(baseURL);
 
 

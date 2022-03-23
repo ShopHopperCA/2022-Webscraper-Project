@@ -71,7 +71,7 @@ const main = async (urlCall) =>{
             }
         }
     )
-    await console.log('Total number of items scraped: ' + count);
+    await console.log('Total number of items scraped for Morgane Shop: ' + count);
 }
 
 
@@ -211,4 +211,6 @@ let test = getId('product/la641p21-pink-c-dress-pink/684')
 //getSizes(getId(test));
 //getColors(getId(test));
 //getSeasons(getId(test));
-main(baseURL);
+
+module.exports={main,baseURL};
+//main(baseURL);

@@ -1,6 +1,6 @@
 /*
 Okanagan Skate Scraper
-
+https://www.okanaganskate.com/
  */
 
 //const fetch = require('node-fetch'); // npm install node-fetch@2
@@ -111,5 +111,6 @@ const getSizes = async (productId)=> {
         console.log('error getting sizes');
     }
 }
+module.exports={main,baseURL};
 
-main(baseURL);
+//main(baseURL);

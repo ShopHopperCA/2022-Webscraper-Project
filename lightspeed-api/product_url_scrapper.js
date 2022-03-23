@@ -10,6 +10,7 @@ It will then loop through each page related to the base url, scraping all produc
 
 removeNodes(page$, nodes) - This function takes in an array of nodes that are deleted from the page at the beginning of the outer for loop execution. 
 Its purpose is to remove any any HTML elements that may be a part of the product list but do not have a link to a product page.
+
 */
 
 const request = require('request-promise');
@@ -107,6 +108,8 @@ async function scrapeProductUrls(site) {
     return product_urls;
 }
 
+/* UTILITY FUNCTIONS */
+
 async function removeNodes(page$, nodes) {
     nodes.forEach(element => {
         page$(element).remove();
@@ -116,17 +119,23 @@ async function removeNodes(page$, nodes) {
 async function scrapeBodyHtml(productUrl, site) {
     const html = await request.get(productUrl);
     const $ = await cheerio.load(html);
-    
-    let bodyHtml = $(site.bodyHtmlSelector).prop('outerHTML');
-    // console.log(bodyHtml)
+
+    let bodyHtml = await $(site.bodyHtmlSelector).prop('outerHTML');
     return bodyHtml;
 }
-/* UTILITY FUNCTIONS */
 
 //Stops the program for a specified number of seconds
 async function sleep(miliseconds)
 {
     return new Promise(resolve => setTimeout(resolve,miliseconds));
+}
+
+async function sleepDate(miliseconds) {
+    var currentTime = new Date().getTime();
+
+    while(currentTime + miliseconds >= new Date().getTime()) {
+
+    }
 }
 
 module.exports = {scrapeProductUrls: scrapeProductUrls, body_html}

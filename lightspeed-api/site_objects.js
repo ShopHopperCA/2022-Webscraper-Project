@@ -21,7 +21,7 @@ const SITE_OBJECTS = [
             "https://www.fossellos.com/shop/bags/",
             "https://www.fossellos.com/shop/eyewear/",
             "https://www.fossellos.com/shop/hats/",
-            "https://www.fossellos.com/shop/accessories/",
+            // "https://www.fossellos.com/shop/accessories/", * This URL currently has no items
             "https://www.fossellos.com/shop/jewelry/"
         ],
         paginationSelector : "div.pagination > ul > li", 
@@ -95,7 +95,7 @@ const SITE_OBJECTS = [
         paginationSelector : 100,
         productListSelector : ".list-collection",
         productLinkSelector : "h3.title > a",
-        bodyHtmlSelector : "div.scroll-to-fixed-fixed > div > p"
+        bodyHtmlSelector : ".module-product > div > div > p"
     },
     STRUT_FOOTWEAR = {
         baseUrl : [

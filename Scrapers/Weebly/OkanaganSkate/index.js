@@ -72,7 +72,7 @@ const main = async (urlCall) =>{
             }
         }
     )
-    await console.log('Total number of items scraped: ' + count);
+    await console.log('Total number of items scraped for Okanagan Skate is: ' + count);
 }
 
 

@@ -73,7 +73,7 @@ const main = async (urlCall) =>{
             }
         }
     )
-    await console.log('Total number of items scraped: ' + count);
+    await console.log('Total number of items scraped from Kaleco is: ' + count);
 }
 
 main(baseURL);

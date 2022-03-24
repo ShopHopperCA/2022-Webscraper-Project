@@ -67,98 +67,8 @@ async function scrapeSecondary(item,page)
         //vendor
         item[i].vendor = product.brand;
 
-        let index = 1;
-
         //variants
-        item[i].variants = Object.values(v).map(elem => {
-            const id = elem.id;
-            const price = product.formattedDiscountedPrice.replace("C$","").replace(".","");
-
-            //size and color
-            let size;
-            let color;
-          
-
-            if(elem.optionsSelections.length == 0)
-            {
-                size = null;
-                color = null;
-            }
-            else if(elem.optionsSelections.length == 1)
-            {
-                size_index = elem.optionsSelections[0];
-                for(let i = 0; i < product.options[0].selections.length;i++)
-                {
-                    if(product.options[0].selections[i].id == size_index)
-                    {
-                        size = product.options[0].selections[i].description;
-                    }
-                }
-                
-                color = null;
-            }
-            else
-            {
-                
-                if(is_size_or_color.indexOf("Color")>-1 || is_size_or_color.indexOf("colour")>-1 ||is_size_or_color.indexOf("Colour")>-1)
-                {
-                    s = 1;
-                    c = 0;
-                }
-                else
-                {
-                    s = 0;
-                    c = 1;
-                }
-
-                if($(".buttonnext1002411228__content").text() == "Out of Stock")
-                {
-                    s = 1;
-                    c = 0;
-                }
-
-                size_index = elem.optionsSelections[s];
-                color_index = elem.optionsSelections[c];
-               
-                
-                for(let i = 0; i < product.options[s].selections.length;i++)
-                {
-                    if(product.options[s].selections[i].id == size_index)
-                    {
-                        size = product.options[s].selections[i].description;
-                    }
-                }
-
-
-                for(let i = 0; i < product.options[c].selections.length;i++)
-                {
-                    if(product.options[c].selections[i].id == color_index)
-                    {
-                        color = product.options[c].selections[i].description;
-                        
-                    }
-                }
-            }
-            
-            const position = index;
-            index++;
-            
-            
-            if(elem.inventory.quantity > 0)
-            {
-                available = true;
-            }
-            else
-            {
-                available = false;
-            }
-            
-            const compare_at_price = elem.formattedPrice.replace("C$","").replace(".","");
- 
-        
-            return{id,price,size,color,position,available, compare_at_price};
-             
-         });
+        item[i].variants = await get_variants($,v,is_size_or_color)
 
         //images
         item[i].images = Object.values(img).map(elem => {
@@ -266,4 +176,101 @@ async function removeDuplicates(json)
         }
     });
     return final;
+}
+
+//function to get variant data
+async function get_variants($,v, is_size_or_color)
+{
+    let index = 1;
+    const variants = Object.values(v).map(elem => {
+        const id = elem.id;
+        const price = product.formattedDiscountedPrice.replace("C$","").replace(".","");
+
+        //size and color
+        let size;
+        let color;
+      
+
+        if(elem.optionsSelections.length == 0)
+        {
+            size = null;
+            color = null;
+        }
+        else if(elem.optionsSelections.length == 1)
+        {
+            size_index = elem.optionsSelections[0];
+            for(let i = 0; i < product.options[0].selections.length;i++)
+            {
+                if(product.options[0].selections[i].id == size_index)
+                {
+                    size = product.options[0].selections[i].description;
+                }
+            }
+            
+            color = null;
+        }
+        else
+        {
+            
+            if(is_size_or_color.indexOf("Color")>-1 || is_size_or_color.indexOf("colour")>-1 ||is_size_or_color.indexOf("Colour")>-1)
+            {
+                s = 1;
+                c = 0;
+            }
+            else
+            {
+                s = 0;
+                c = 1;
+            }
+
+            if($(".buttonnext1002411228__content").text() == "Out of Stock")
+            {
+                s = 1;
+                c = 0;
+            }
+
+            size_index = elem.optionsSelections[s];
+            color_index = elem.optionsSelections[c];
+           
+            
+            for(let i = 0; i < product.options[s].selections.length;i++)
+            {
+                if(product.options[s].selections[i].id == size_index)
+                {
+                    size = product.options[s].selections[i].description;
+                }
+            }
+
+
+            for(let i = 0; i < product.options[c].selections.length;i++)
+            {
+                if(product.options[c].selections[i].id == color_index)
+                {
+                    color = product.options[c].selections[i].description;
+                    
+                }
+            }
+        }
+        
+        const position = index;
+        index++;
+        
+        
+        if(elem.inventory.quantity > 0)
+        {
+            available = true;
+        }
+        else
+        {
+            available = false;
+        }
+        
+        const compare_at_price = elem.formattedPrice.replace("C$","").replace(".","");
+
+    
+        return{id,price,size,color,position,available, compare_at_price};
+         
+     });
+
+     return variants
 }

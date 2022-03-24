@@ -1,5 +1,8 @@
 # 2022-Webscraper-Project
 
+Instructions(How to Run): 
+The structure of how the separate scrapers are organized is through having different folders based off of the ecommerce website structures and whether or not there was an API or a regular web scraper. There are folders for Woocomerce Scrapers, lightspeed-api, Wix Api, Wix web scrapers, the alpaca web scraper (BigCommerce), and Kaleco and Weebly APIs. To run each scraper go to the terminal and run the scraper by using the following format: node foldername/filename.js. The three packages that must be installed to run all of the scrapers are node-fetch version 2, puppeteer version 11, and cheerio version 1. These can be installed using npm install cheerio, node-fetch@2, puppeteer@11.
+
 Process Manual for ShopHopper Web Scrapers
 By Adán David Sierra Calderón,
 Cole Horvat,

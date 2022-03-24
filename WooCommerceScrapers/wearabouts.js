@@ -123,11 +123,11 @@ async function scrapeSecondary(item,page)
        
        
            const size = elem.attributes.attribute_pa_size;
-           let colors = elem.attributes.attribute_pa_color;
+           let color = elem.attributes.attribute_pa_color;
 
-           if(colors == undefined)
+           if(color == undefined)
            {
-                colors = "";
+                color = "";
            }
        
            const position = index;
@@ -143,7 +143,7 @@ async function scrapeSecondary(item,page)
            }
 
        
-           return{id,sku,price,size,colors,position,available, compare_at_price};
+           return{id,sku,price,size,color,position,available, compare_at_price};
             
         });
     
@@ -227,7 +227,7 @@ async function main()
     const items_info = await scrapeSecondary(shoes_title_and_url,page);
     const data = JSON.stringify(items_info);
 
-    await writeJSOn("wearabouts.json",data);
+    await writeJSOn("WooCommerceScrapers/wearabouts.json",data);
 
 }
 

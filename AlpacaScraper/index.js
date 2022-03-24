@@ -187,12 +187,20 @@ async function main()
     const data = JSON.stringify(item_info);
 
     // write JSON string to a file
-    fs.writeFile('alpaca.json', data, (err) => {
+    await writeJSOn("AlpacaScraper/alpaca.json",data);
+}
+
+main();
+
+
+//---------------utility functions--------------------------------//
+//write json file
+async function writeJSOn(filename, data)
+{
+     fs.writeFile(filename, data, (err) => {
         if (err) {
             throw err;
         }
         console.log("JSON data is saved.");
     });
 }
-
-main();

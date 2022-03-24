@@ -82,16 +82,16 @@ async function scrapeSecondary(item,page)
            }
        
            const size = elem.attributes.attribute_pa_sizes;
-           let colors = elem.attributes.attribute_pa_colors;
+           let color = elem.attributes.attribute_pa_colors;
            let metal_color = elem.attributes['attribute_metal-color'];
 
-           if(colors == undefined && metal_color == undefined)
+           if(color == undefined && metal_color == undefined)
            {
-                colors = "";
+                color = "";
            }
-           else if(colors == undefined && metal_color != undefined)
+           else if(color == undefined && metal_color != undefined)
            {
-                colors = metal_color;
+                color = metal_color;
            }
        
            const position = index;
@@ -107,7 +107,7 @@ async function scrapeSecondary(item,page)
            }
 
        
-           return{id,price,size,colors,position,available, compare_at_price};
+           return{id,price,size,color,position,available, compare_at_price};
             
         });
     

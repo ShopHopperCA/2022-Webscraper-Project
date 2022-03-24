@@ -70,11 +70,11 @@ async function scrapeSecondary(item,page)
            }
        
            const size = elem.attributes['attribute_pa_women-size'];
-           let colors = elem.attributes.attribute_pa_color;
+           let color = elem.attributes.attribute_pa_color;
 
-           if(colors == undefined)
+           if(color == undefined)
            {
-                colors = "";
+                color = "";
            }
        
            const position = index;
@@ -90,7 +90,7 @@ async function scrapeSecondary(item,page)
            }
 
        
-           return{id,price,size,colors,position,available, compare_at_price};
+           return{id,price,size,color,position,available, compare_at_price};
             
         });
     
@@ -150,7 +150,7 @@ async function main()
 
     const data = JSON.stringify(item_info);
 
-    await writeJSOn("soledoc.json",data);
+    await writeJSOn("WooCommerceScrapers/soledoc.json",data);
 }
 
 main();

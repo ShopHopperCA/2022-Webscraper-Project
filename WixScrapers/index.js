@@ -57,6 +57,9 @@ async function scrapeSecondary(item,page)
       
         data = $('script[id = "wix-warmup-data"]').html();
         data = JSON.parse(data);
+
+        try
+        {
         product = data.appsWarmupData['1380b703-ce81-ff05-f115-39571d94dfcd'][json_pindex].catalog.product;
         v = product.productItems;
         img = product.media;
@@ -109,6 +112,14 @@ async function scrapeSecondary(item,page)
         item[i].compare_at_price = product.formattedPrice.replace("C$","").replace(".","");
 
         item[i].original_price = product.formattedDiscountedPrice.replace("C$","").replace(".","");
+        }
+        catch(e)
+        {
+            console.log(item[i].title + " " + e.message);
+            item.splice(i,1);
+            console.log("Deleted Bad Gateway");
+            continue;
+        }
 
       
     }

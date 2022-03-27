@@ -112,12 +112,15 @@ async function scrapeSecondary(item,page)
         item[i].compare_at_price = product.formattedPrice.replace("C$","").replace(".","");
 
         item[i].original_price = product.formattedDiscountedPrice.replace("C$","").replace(".","");
+
         }
+
         catch(e)
         {
             console.log(item[i].title + " " + e.message);
             item.splice(i,1);
             console.log("Deleted Bad Gateway");
+            i = i-1;
             continue;
         }
 

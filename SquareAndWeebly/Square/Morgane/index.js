@@ -7,7 +7,7 @@ const axios = require("axios");
 const chalk = require('chalk');                      // npm i chalk@2.4.1
 const baseURL = 'https://cdn5.editmysite.com/app/store/api/v17/editor/users/132504777/sites/962101679689053553/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&include=images,media_files&excluded_fulfillment=dine_in'
 const businessName = 'Morgane'
-let count = 0;
+let count = 1;
 
 
 const main = async (urlCall) =>{
@@ -212,5 +212,5 @@ let test = getId('product/la641p21-pink-c-dress-pink/684')
 //getColors(getId(test));
 //getSeasons(getId(test));
 
-module.exports={main,baseURL};
+module.exports={main,baseURL,count};
 //main(baseURL);

@@ -5,8 +5,9 @@ Template for Weebly-based sites
 
 const axios = require("axios");
 const chalk = require('chalk');                      // npm i chalk@2.4.1
-const baseURL = 'https://cdn5.editmysite.com/app/store/api/v17/editor/users/117455569/sites/947780008751768186/products?page=1&per_page=120&sort_by=category_order&sort_order=asc&categories[]=11ea746b801d3743a53a0cc47a2b63cc&include=images,media_files&excluded_fulfillment=dine_in';
-const businessName = 'Okanagan Skate Scraper'
+const baseURL = 'ENTER ';
+//baseURL is the ALL products call should look something like this: https://cdn5.editmysite.com/app/store/api/v18/editor/users/131535993/sites/542536437781936289/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&categories[]=11ea7aa7c1810cefae500cc47a2ae330&include=images,media_files&excluded_fulfillment=dine_in
+const businessName = 'ENTER BUSINESS NAME'
 let count = 0;
 
 
@@ -61,7 +62,7 @@ const main = async (urlCall) =>{
             for(var i =0; i < value.length; i++){
                 console.log(chalk.green('This is item number: ') + chalk.blue(i));
                 for(v in value[i]){
-                    // if(v == 'images' || v == 'IMAGES'){
+                    // if(v == 'images' || v == 'IMAGES'){        //used to see what's inside images
                     //     console.log(v);
                     //     for(prop in value[i]['images'])
                     //         console.log(value[i]['images'][prop])
@@ -90,7 +91,7 @@ const getDescription = async (productId) => {
         const data = response.data.data;
         return data['short_description']
     }catch (err){
-        console.log('error getting desription')
+        console.log('error getting description')
     }
 }
 

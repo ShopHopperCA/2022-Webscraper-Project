@@ -7,7 +7,7 @@ const axios = require("axios");
 const chalk = require('chalk');                      // npm i chalk@2.4.1
 const baseURL = 'https://cdn5.editmysite.com/app/store/api/v17/editor/users/132854427/sites/349105600708762559/products?page=1&per_page=180&sort_by=name&sort_order=asc&include=images,media_files&excluded_fulfillment=dine_in';
 const businessName = 'Sassy Shoes'
-let count = 0;
+let count = 1;
 
 var options = {
     method: 'GET',
@@ -186,6 +186,6 @@ let test2 = 'product/montana-hudson-cowhide-eva-bag/192';
 //getColors(getId(test2));
 //getSizes(getId(test));
 
-module.exports={main,baseURL};
+module.exports={main,baseURL,count};
 
 //main(baseUrl);

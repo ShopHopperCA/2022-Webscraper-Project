@@ -9,7 +9,7 @@ const {getDescription, getId, getSizes} = require("../helperFunctions");
 const chalk = require('chalk');                      // npm i chalk@2.4.1
 const baseURL = "https://cdn5.editmysite.com/app/store/api/v17/editor/users/131535993/sites/542536437781936289/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&categories[]=11ea7aa7c1810cefae500cc47a2ae330&include=images,media_files&excluded_fulfillment=dine_in";
 const businessName = 'Kaleco sustainable lifestyle'
-let count = 0;
+let count = 1;
 
 
 const main = async (urlCall) =>{
@@ -76,7 +76,9 @@ const main = async (urlCall) =>{
     await console.log('Total number of items scraped from Kaleco is: ' + count);
 }
 
-module.exports={main,baseURL};
+//main(baseURL);   // for specific scraper debugging only should be removed when called from the main scraper
+
+module.exports={main,baseURL,count};
 
 //main(baseURL);
 

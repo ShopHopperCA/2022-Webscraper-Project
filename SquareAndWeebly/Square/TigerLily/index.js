@@ -7,7 +7,7 @@ const axios = require("axios");
 const chalk = require('chalk'); // npm i chalk@2.4.1
 const baseURL= `https://cdn5.editmysite.com/app/store/api/v17/editor/users/132063100/sites/322749464172055185/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&excluded_fulfillment=dine_in&include=images,media_files`;
 const businessName = 'Tiger Lily'
-let count = 0;
+let count = 1;
 
 
 const main = async (urlCall) =>{
@@ -166,6 +166,6 @@ let test = getId('product/summer-a-line-dress/2')
 //getSizes(test);
 //getColors(test);
 
-module.exports={main,baseURL};
+module.exports={main,baseURL,count};
 
 //main(baseUrl);

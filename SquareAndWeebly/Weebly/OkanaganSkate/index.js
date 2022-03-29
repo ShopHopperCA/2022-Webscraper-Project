@@ -8,7 +8,7 @@ const axios = require("axios");
 const chalk = require('chalk');                      // npm i chalk@2.4.1
 const baseURL = 'https://cdn5.editmysite.com/app/store/api/v17/editor/users/117455569/sites/947780008751768186/products?page=1&per_page=120&sort_by=category_order&sort_order=asc&categories[]=11ea746b801d3743a53a0cc47a2b63cc&include=images,media_files&excluded_fulfillment=dine_in';
 const businessName = 'Okanagan Skate'
-let count = 0;
+let count = 1;
 
 
 const main = async (urlCall) =>{
@@ -111,6 +111,6 @@ const getSizes = async (productId)=> {
         console.log('error getting sizes');
     }
 }
-module.exports={main,baseURL};
+module.exports={main,baseURL,count};
 
 //main(baseURL);

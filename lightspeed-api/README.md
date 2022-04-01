@@ -83,8 +83,19 @@ The `body_html` data point is the HTML that is wrapped around the description, s
 
 #### productItemSelector (String)
 
-#### removeNodes (String)
+This parameter takes a CSS selector of the element that you want to parse in the case that there are elements in between the product elements as seen here.
+
+![Screenshot from 2022-04-01 13-50-18](https://user-images.githubusercontent.com/56736430/161339890-7e64fefe-f83c-4efe-8257-cbc30cac811d.png)
+
+In this example in One Board Shop, we specify `.col-md-4` to ignore the `.cf` elements in between the product elements.
+
+#### removeNodes (String[])
+
+Another way to ignore elements that are in the way is to use the removeNodes parameter. This will remove any HTML elements based on the given CSS selector(s). We use this in One Board Shop to remove the `.cf` elements.
+
+Note: While this parameter does work for the most part, it's hit or miss. `productItemSelector` is generally a more reliable solution at the time of writing this.
 
 
 ## File Walkthrough
+
 

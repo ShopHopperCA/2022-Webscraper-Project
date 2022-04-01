@@ -126,12 +126,5 @@ async function sleep(miliseconds)
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 }
 
-async function sleepDate(miliseconds) {
-    var currentTime = new Date().getTime();
-
-    while(currentTime + miliseconds >= new Date().getTime()) {
-
-    }
-}
 
 module.exports = {scrapeProductUrls: scrapeProductUrls, body_html}

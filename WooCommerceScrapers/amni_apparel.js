@@ -105,9 +105,9 @@ async function scrapeSecondary(item,page)
         //images
         item[i].images = $('.woocommerce-product-gallery__image').map((index,element) =>{
             
-            const src = $(element).find("a").find("img").attr("src");
-            const width = $(element).find("a").find("img").attr("width");
-            const height = $(element).find("a").find("img").attr("height");
+            const src = $(element).find("a").find("img").attr("data-large_image");
+            const width = $(element).find("a").find("img").attr("data-large_image_width");
+            const height = $(element).find("a").find("img").attr("data-large_image_height");
             const position = index + 1;
        
             return{src,height,width,position};

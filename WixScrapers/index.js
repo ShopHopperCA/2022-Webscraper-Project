@@ -75,7 +75,7 @@ async function scrapeSecondary(item,page)
 
         //images
         item[i].images = Object.values(img).map(elem => {
-            const src = elem.fullUrl;
+            let src = elem.fullUrl;
             const width = elem.width;
             const height =elem.height;
             const position = elem.index + 1;

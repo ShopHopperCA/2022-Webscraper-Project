@@ -98,4 +98,32 @@ Note: While this parameter does work for the most part, it's hit or miss. `produ
 
 ## File Walkthrough
 
+### site_objects.js
 
+`site_objects.js` contains only an exported object array that contains all the information `product_url_scraper.js` needs to scrape information from the websites. The objects in the array contain required and optional parameters that we went over in the previous section.
+
+`site_objects.js` is the only file that should be edited when adding new Lightspeed websites.
+
+### product_url_scraper.js
+
+`product_url_scraper.js` gets all information from the **HTML** page including the URL for the data page and the body_html data point. 
+
+To do this it takes information from the SITE_OBJECTS array in `site_objects.js`.
+
+#### Execution
+
+1. Loop through the urls given from `site_objects.js`
+2. Set the amount pagination amount based on the pagination CSS selector or the hard-coded integer amount
+3. Loop through pagination amount and set them page url based on the base url from `SITE_OBJECTS` and the current pagination.
+4. Loop through the product list given by `SITE_OBJECTS` and get the product element, product url, body_html, check if the product url is already pushed into the `product_urls` array and if not, push it into `product_urls`.
+
+
+### index.js
+
+`index.js` is the executable file. It gets the converted `.ajax` urls and fethces the information from the data pages.
+
+#### Execution
+
+1. Loop through all objects in `SITE_OBJECTS` and scrape the .ajax urls using `scrapeProductUrls()`
+2. Loop through all scraped .ajax urls and fetch all data points using the GET functions.
+3. Output results to `lightspeedOutputJson.json`.

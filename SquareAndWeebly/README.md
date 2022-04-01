@@ -22,7 +22,7 @@ that is used then used to populate the site.
 
 There are many API calls that can be observed through the networks tab in the Developers Tool console.
 
-For the creation of these specifics scrapers we are mostly interested in **2-3** specifc calls being made (depending on the individual page implementation):
+For the creation of these specifics scrapers we are mostly interested in **2-3** specific calls being made (depending on the individual page implementation):
 - The "All products call"
 - The "Specific product call"
 - The "Specific options/sizes call"
@@ -91,7 +91,7 @@ As a preamble here are some of the Node Packages needed:
     - Axios performs automatic JSON data.
     
 
-- ~~Chalk~~ (npm i chal@2.4.1): Just used for displaying/testing/debugging purposes, NOT meant for production.
+- ~~Chalk~~ (npm i chalk@2.4.1): Just used for displaying/testing/debugging purposes, NOT meant for production.
 
 
 

@@ -7,9 +7,10 @@ https://www.kaleco.ca/
 const axios = require("axios");
 const {getDescription, getId, getSizes} = require("../helperFunctions");
 const chalk = require('chalk');                      // npm i chalk@2.4.1
+const fs = require('fs')
 const baseURL = "https://cdn5.editmysite.com/app/store/api/v17/editor/users/131535993/sites/542536437781936289/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&categories[]=11ea7aa7c1810cefae500cc47a2ae330&include=images,media_files&excluded_fulfillment=dine_in";
 const businessName = 'Kaleco sustainable lifestyle'
-let count = 1;
+let count = 0;
 
 
 const main = async (urlCall) =>{
@@ -29,13 +30,15 @@ const main = async (urlCall) =>{
        const original_price = item.price.high_subunits;
         let productId = getId(url);
         const sizes = await getSizes(productId);
-        const images = item.images;
+       // const images = item.images;
+        const images = await getImages(item.images.data); // gets every absolute url image
       //  const options = await getOptions(productId);
         const created_at = item.created_date;
         const updated_at = item.updated_date;
         const is_on_sale = item.on_sale;
         const rating = item.avg_rating_all;
-        const body_html = await getDescription(productId);
+       // const body_html = await getDescription(productId);
+        const body_html = item.short_description;
 
 
         return{
@@ -68,18 +71,44 @@ const main = async (urlCall) =>{
                     //     for(prop in value[i]['images'])
                     //         console.log(value[i]['images'][prop])
                     // }
-                    console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);
+                   //  fs.writeFileSync('../../morgane.json', JSON.stringify(v + value[i][v],null,4));
+                   // console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);    // USE TO SEE ON THE CONSOLE
+                }
+                try{
+                fs.writeFileSync('./kaleco.json', JSON.stringify(value,null,4));
+                }
+                catch (err){
+                    console.log('error writing to file' +err.message)
                 }
             }
+            //fs.writeFileSync('../../morgane.json', JSON.stringify(data,null,4));
         }
     )
+    //await fs.writeFileSync('../../morgane.json', JSON.stringify(data,null,4));
     await console.log('Total number of items scraped from Kaleco is: ' + count);
+}
+
+
+
+//main(baseURL);
+
+
+const getImages = async (arr) =>{
+    let images = [];
+    for(let i=0; i<arr.length; i++){
+
+        for(img in arr[i]){
+            if(img === 'absolute_url'){
+                images.push(arr[i][img])
+            }
+        }
+    }
+
+    return images;
 }
 
 //main(baseURL);   // for specific scraper debugging only should be removed when called from the main scraper
 
 module.exports={main,baseURL,count};
-
-//main(baseURL);
 
 

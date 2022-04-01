@@ -4,9 +4,20 @@ const morgane = require('./Square/Morgane/index');
 const sassyShoes = require('./Square/SassyShoes/index');
 const tigerLily = require('./Square/TigerLily/index');
 
-kaleco.main(kaleco.baseURL);
-okanagan.main(okanagan.baseURL);
-morgane.main(morgane.baseURL);
-sassyShoes.main(sassyShoes.baseURL);
-tigerLily.main(tigerLily.baseURL);
 
+const scrapeAll = async ()=> {
+
+   await kaleco.main(kaleco.baseURL);
+   await okanagan.main(okanagan.baseURL);
+   await morgane.main(morgane.baseURL);
+   await sassyShoes.main(sassyShoes.baseURL);
+   await tigerLily.main(tigerLily.baseURL);
+
+
+
+}
+
+
+
+
+scrapeAll();

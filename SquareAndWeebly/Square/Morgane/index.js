@@ -5,9 +5,10 @@ https://morganekelowna.square.site/s/shop
 
 const axios = require("axios");
 const chalk = require('chalk');                      // npm i chalk@2.4.1
+const fs = require('fs')
 const baseURL = 'https://cdn5.editmysite.com/app/store/api/v17/editor/users/132504777/sites/962101679689053553/products?page=1&per_page=180&sort_by=popularity_score&sort_order=desc&include=images,media_files&excluded_fulfillment=dine_in'
 const businessName = 'Morgane'
-let count = 1;
+let count = 0;
 
 
 const main = async (urlCall) =>{
@@ -27,14 +28,15 @@ const main = async (urlCall) =>{
         const product_type = item.product_type;
         const original_price = item.price.high_subunits;
         const sizes = await getSizes(productId);
-        const images = item.images;
+        //const images = item.images;
+        const images = await getImages(item.images.data); // gets every absolute url image
         //  const options = await getOptions(productId);
         const created_at = item.created_date;
         const updated_at = item.updated_date;
         const is_on_sale = item.on_sale;
         const rating = item.avg_rating_all;
-        const body_html = await getDescription(productId);
-
+       // const body_html = await getDescription(productId);
+        const body_html = item.short_description;
 
         return{
             id,
@@ -59,14 +61,20 @@ const main = async (urlCall) =>{
     Promise.all(data).then(
         value => {
             for(var i =0; i < value.length; i++){
-                console.log(chalk.green('This is item number: ') + chalk.blue(i));
+              //  console.log(chalk.green('This is item number: ') + chalk.blue(i));
                 for(v in value[i]){
                     // if(v == 'images' || v == 'IMAGES'){
                     //     console.log(v);
                     //     for(prop in value[i]['images'])
                     //         console.log(value[i]['images'][prop])
                     // }
-                    console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);
+                   // console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);
+                }
+                try {
+                    fs.writeFileSync('./morgane.json', JSON.stringify(value, null, 4));
+                }
+                catch (err){
+                    console.log('error writing tiger lily ' +err.message)
                 }
             }
         }
@@ -203,6 +211,20 @@ const getSeasons = async (productId) => {
     }
 }
 
+const getImages = async (arr) =>{
+    let images = [];
+    for(let i=0; i<arr.length; i++){
+
+        for(img in arr[i]){
+            if(img === 'absolute_url'){
+                images.push(arr[i][img])
+            }
+        }
+    }
+
+    return images;
+}
+
 
 let test = getId('product/la641p21-pink-c-dress-pink/684')
 
@@ -213,4 +235,5 @@ let test = getId('product/la641p21-pink-c-dress-pink/684')
 //getSeasons(getId(test));
 
 module.exports={main,baseURL,count};
-//main(baseURL);
+
+//main(baseURL);  //testing

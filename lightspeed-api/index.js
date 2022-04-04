@@ -56,7 +56,7 @@ async function main() {
         }
     }
 
-    //await console.log(result);
+    await console.log(result);
     await console.log("Number of items scraped: " + result.length);
 
     //Write to output file
@@ -122,22 +122,20 @@ async function getTags(productJson) {
 
 async function getImages(productJson) {
     let images = productJson['images'];
+    let finalImages = [];
+    let finalImage = "";
 
     images.forEach(async image => {
         imageSplit = await image.split('/')
-        // console.log(image)
-        console.log(imageSplit[7])
         imageSplit[7] = '780x1040x3'
-        console.log(imageSplit[7])
         image = imageSplit.toString();
 
-        let splitString = imageSplit.toString();
-
-        let finalImage = splitString.split(',').join('/');
-        console.log(finalImage)
+        finalImage = imageSplit.toString().split(',').join('/');
+        
+        finalImages.push(finalImage);
     })
 
-    return productJson['images']
+    return finalImages;
 }
 
 async function getPrice(productJson) {

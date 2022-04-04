@@ -30,10 +30,9 @@ async function scrapeProductUrls(site) {
     const product_urls = [];
 
     for(var urlIndex = 0; urlIndex < site.baseUrl.length; urlIndex++) {
-        console.log(urlIndex);
         const html = await request.get(site.baseUrl[urlIndex]);
         const $ = await cheerio.load(html)
-        console.log("urlIndex: " + urlIndex)
+        console.log("\nURL: " + site.baseUrl[urlIndex] + '\n_________________________________________________________');
         
         let paginationEnd;
         let productUrl;
@@ -84,8 +83,6 @@ async function scrapeProductUrls(site) {
                     productElement = await page$(site.productListSelector).children().eq(j);
                     productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
                     
-                    
-                    console.log(productUrl);
                     let html = await scrapeBodyHtml(productUrl, site);
                     body_html[productUrl] = html;
                     
@@ -97,7 +94,6 @@ async function scrapeProductUrls(site) {
                     }
 
                     console.log(productUrl);
-                    
 
                     product_urls.push(productUrl);
                     
@@ -130,12 +126,5 @@ async function sleep(miliseconds)
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 }
 
-async function sleepDate(miliseconds) {
-    var currentTime = new Date().getTime();
-
-    while(currentTime + miliseconds >= new Date().getTime()) {
-
-    }
-}
 
 module.exports = {scrapeProductUrls: scrapeProductUrls, body_html}

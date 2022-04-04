@@ -30,14 +30,14 @@ const SITE_OBJECTS = [
         bodyHtmlSelector : "div.product-description"
     },
 
-    RED_TOP_FOOTWEAR = {
-        baseUrl : ["https://red-top-footwear.shoplightspeed.com/ladies/",],
-        paginationSelector : "ul.right > li", 
-        productListSelector : "div.col-md-9", 
-        productLinkSelector : "a.title",
-        removeNodes : [".clearfix",],
-        bodyHtmlSelector : ".clearfix"
-    },
+    // RED_TOP_FOOTWEAR = {
+    //     baseUrl : ["https://red-top-footwear.shoplightspeed.com/ladies/",],
+    //     paginationSelector : "ul.right > li", 
+    //     productListSelector : "div.col-md-9", 
+    //     productLinkSelector : "a.title",
+    //     removeNodes : [".clearfix",],
+    //     bodyHtmlSelector : ".clearfix"
+    // },
 
     ENVY_APPAREL = {
         baseUrl : ["https://shop.envyapparelfit.com/shop/"],

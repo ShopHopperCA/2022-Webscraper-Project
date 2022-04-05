@@ -127,7 +127,7 @@ async function getImages(productJson) {
 
     images.forEach(async image => {
         imageSplit = await image.split('/')
-        imageSplit[7] = '780x1040x3'
+        imageSplit[7] = '500x500x2'
         image = imageSplit.toString();
 
         finalImage = imageSplit.toString().split(',').join('/');

@@ -17,7 +17,7 @@ const SITE_OBJECTS = [
             "https://www.fossellos.com/shop/dresses-skirts/",
             "https://www.fossellos.com/shop/jackets/",
             "https://www.fossellos.com/shop/footwear/",
-            "https://www.fossellos.com/shop/belts/",
+            // "https://www.fossellos.com/shop/belts/",
             "https://www.fossellos.com/shop/bags/",
             "https://www.fossellos.com/shop/eyewear/",
             "https://www.fossellos.com/shop/hats/",

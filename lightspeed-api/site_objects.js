@@ -17,11 +17,11 @@ const SITE_OBJECTS = [
             "https://www.fossellos.com/shop/dresses-skirts/",
             "https://www.fossellos.com/shop/jackets/",
             "https://www.fossellos.com/shop/footwear/",
-            // "https://www.fossellos.com/shop/belts/",
+            "https://www.fossellos.com/shop/belts/",
             "https://www.fossellos.com/shop/bags/",
             "https://www.fossellos.com/shop/eyewear/",
             "https://www.fossellos.com/shop/hats/",
-            // "https://www.fossellos.com/shop/accessories/", * This URL currently has no items
+            "https://www.fossellos.com/shop/accessories/", 
             "https://www.fossellos.com/shop/jewelry/"
         ],
         paginationSelector : "div.pagination > ul > li", 
@@ -29,6 +29,8 @@ const SITE_OBJECTS = [
         productLinkSelector : ".product-image-wrapper",
         bodyHtmlSelector : "div.product-description"
     },
+
+    //RED TOP FOOTWEAR IS DOWN
 
     // RED_TOP_FOOTWEAR = {
     //     baseUrl : ["https://red-top-footwear.shoplightspeed.com/ladies/",],

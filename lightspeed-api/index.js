@@ -121,7 +121,21 @@ async function getTags(productJson) {
 }
 
 async function getImages(productJson) {
-    return productJson['images']
+    let images = productJson['images'];
+    let finalImages = [];
+    let finalImage = "";
+
+    images.forEach(async image => {
+        imageSplit = await image.split('/')
+        imageSplit[7] = '780x1040x3'
+        image = imageSplit.toString();
+
+        finalImage = imageSplit.toString().split(',').join('/');
+        
+        finalImages.push(finalImage);
+    })
+
+    return finalImages;
 }
 
 async function getPrice(productJson) {

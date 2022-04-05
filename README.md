@@ -26,8 +26,8 @@ The full output of the scraper is written in `lightspeedOutputJson.json` in the 
 
 ### Packages and Versions (April 4th, 2022)
 
-cheerio - ^1.0.0-rc.10
-node-fetch - ^2.88.2
-request: ^2.88.2
-request-promise - ^4.2.6
+cheerio - ^1.0.0-rc.10<br />
+node-fetch - ^2.88.2<br />
+request: ^2.88.2<br />
+request-promise - ^4.2.6<br />
 

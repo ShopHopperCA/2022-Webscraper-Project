@@ -1,0 +1,28 @@
+model Product {
+  id               Int      @id @default(autoincrement())
+  title            String   @unique
+  business_name    String?
+  url              String?
+  place_id         String?
+  handle           String?
+  vendor           String?
+  tags             String[]
+variants         Json?
+images           Json?
+options          Json?
+rating           Int?     @default(0)
+body_html        String?
+created_at       DateTime @default(now())
+product_type     String?
+published_at     DateTime @default(now())
+updated_at       DateTime @default(now())
+colors           String[]
+compare_at_price Int?
+original_price   Int?
+sizes            String[]
+buckets          String[]
+is_on_sale       Boolean?
+sale_ratio       Int?
+
+@@map("products")
+}

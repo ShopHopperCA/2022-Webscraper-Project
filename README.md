@@ -1,7 +1,5 @@
-# 2022-Webscraper-Project
 
-Instructions(How to Run): 
-The structure of how the separate scrapers are organized is through having different folders based off of the ecommerce website structures and whether or not there was an API or a regular web scraper. There are folders for Woocomerce Scrapers, lightspeed-api, Wix Api, Wix web scrapers, the alpaca web scraper (BigCommerce), and Kaleco and Weebly APIs. To run each scraper go to the terminal and run the scraper by using the following format: node foldername/filename.js. The three packages that must be installed to run all of the scrapers are node-fetch version 2, puppeteer version 11, and cheerio version 1. These can be installed using npm install cheerio, node-fetch@2, puppeteer@11.
+# 2022-Webscraper-Project
 
 Process Manual for ShopHopper Web Scrapers
 By Adán David Sierra Calderón,
@@ -22,3 +20,45 @@ Next inspect individual product pages inspect using google developer tools once 
 
 Step 4: Output and inspect JSON
 Then output the JSON array that has been created. Inspect the JSON closely to look for any potential issues. Utility functions made need to be created to eliminate duplicates, or help with any other potential problems that are found.
+# ShopHopper Webscrapers
+
+## Lightspeed
+
+### Instructions to Run Scraper
+
+**1.** Go to root folder in terminal and execute `npm install` to install all required packages and libraries.
+
+**2.** Change directory to the lightspeed folder using `cd lighspeed-api`. 
+
+**3.** Execute `node index.js` to execute the scraper.
+
+### Feedback Guide
+
+**Mid-Execution**
+
+**URL:** This is the base URL that is currently being parsed.
+
+After `URL:` are all the individual `.ajax` product urls that are scraped from that url.
+
+**Post-Execution**
+
+After execution, a small part of the results will be displayed in the terminal, as well as the amount of items scraped and the execution time in milliseconds.
+
+The full output of the scraper is written in `lightspeedOutputJson.json` in the `lightspeed-api` folder.
+
+### Packages and Versions (April 4th, 2022)
+
+cheerio - ^1.0.0-rc.10<br />
+node-fetch - ^2.88.2<br />
+request: ^2.88.2<br />
+request-promise - ^4.2.6<br />
+
+
+## Weebly Scrapers
+  - ~~Kaleco Scraper~~ (https://www.kaleco.ca/) : ***2nd draft***
+  - ~~Okanagan Skate Co Scraper~~ (http://www.okanaganskate.com/) : ***2nd draft***
+    
+## Square Scrapers:
+  - ~~Morgan Kelowna (https://morganekelowna.square.site/s/shop)~~ : ***2nd draft***
+  - ~~Tigerlily Fashions Clothing (https://shoptigerlilyclothing.square.site/)~~ : ***2nd draft***
+  - ~~Sassy Shoes (https://sassy-shoes.square.site/s/shop)~~ : ***2nd draft***

@@ -82,16 +82,16 @@ async function scrapeSecondary(item,page)
            }
        
            const size = elem.attributes.attribute_pa_sizes;
-           let colors = elem.attributes.attribute_pa_colors;
+           let color = elem.attributes.attribute_pa_colors;
            let metal_color = elem.attributes['attribute_metal-color'];
 
-           if(colors == undefined && metal_color == undefined)
+           if(color == undefined && metal_color == undefined)
            {
-                colors = "";
+                color = "";
            }
-           else if(colors == undefined && metal_color != undefined)
+           else if(color == undefined && metal_color != undefined)
            {
-                colors = metal_color;
+                color = metal_color;
            }
        
            const position = index;
@@ -107,16 +107,16 @@ async function scrapeSecondary(item,page)
            }
 
        
-           return{id,price,size,colors,position,available, compare_at_price};
+           return{id,price,size,color,position,available, compare_at_price};
             
         });
     
         //images
         item[i].images = $('.woocommerce-product-gallery__image').map((index,element) =>{
             
-            const src = $(element).find("a").find("img").attr("src");
-            const width = $(element).find("a").find("img").attr("width");
-            const height = $(element).find("a").find("img").attr("height");
+            const src = $(element).find("a").find("img").attr("data-large_image");
+            const width = $(element).find("a").find("img").attr("data-large_image_width");
+            const height = $(element).find("a").find("img").attr("data-large_image_height");
             const position = index + 1;
        
             return{src,height,width,position};
@@ -138,19 +138,19 @@ async function scrapeSecondary(item,page)
     }
 
     //prices
-    item[i].compare_at_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span > bdi').text().replace('$','').replace('.','');
+    item[i].compare_at_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span > bdi').text().replace('$','').replace('.','').trim();
 
     item[i].original_price = item[i].compare_at_price;
     
     if(item[i].original_price.length == 0)
     {
-        item[i].original_price =  $('.elementor-widget-woocommerce-product-price > div > p > span > ins > span > bdi').text().replaceAll('$','').replaceAll('.','');
-        item[i].compare_at_price = $(".elementor-widget-woocommerce-product-price > div > p > span > del > span > bdi").text().replaceAll('$','').replaceAll('.','');
+        item[i].original_price =  $('.elementor-widget-woocommerce-product-price > div > p > span > ins > span > bdi').text().replaceAll('$','').replaceAll('.','').trim();
+        item[i].compare_at_price = $(".elementor-widget-woocommerce-product-price > div > p > span > del > span > bdi").text().replaceAll('$','').replaceAll('.','').trim();
     }
     else if(item[i].original_price.length > 0 && item[i].original_price.indexOf('$')>-1)
     {
-        item[i].original_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span:nth-child(1) > bdi').text().replaceAll('$','').replaceAll('.','');;
-        item[i].compare_at_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span:nth-child(2) > bdi').text().replaceAll('$','').replaceAll('.','');
+        item[i].original_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span:nth-child(1) > bdi').text().replaceAll('$','').replaceAll('.','').trim();
+        item[i].compare_at_price = $('.elementor-widget-woocommerce-product-price > div > p > span > span:nth-child(2) > bdi').text().replaceAll('$','').replaceAll('.','').trim();
     }
 
     }
@@ -169,9 +169,10 @@ async function main()
     const bra_title_and_url = await scrapeMain(bra_url,page);
     const uw_title_and_url = await scrapeMain(underwear_url,page);
     const products_info = await scrapeSecondary(uw_title_and_url,page);
-    const data = JSON.stringify(products_info);
+    const cleaned_info = await removeDuplicates(products_info);
+    const data = JSON.stringify(cleaned_info);
 
-    await writeJSOn("nge.json",data);
+    await writeJSOn("WooCommerceScrapers/nge.json",data);
   
 }
 
@@ -213,4 +214,24 @@ async function writeJSOn(filename, data)
         }
         console.log("JSON data is saved.");
     });
+}
+
+//function for removing duplicate products
+async function removeDuplicates(json)
+{
+    var final = [];
+    json.forEach(function(item) {
+        var unique = true;
+        final.forEach(function(item2) {
+            if (item.id== item2.id) 
+            {
+                unique = false;
+            }
+        });
+        if (unique)
+        {
+            final.push(item);
+        }
+    });
+    return final;
 }

@@ -123,11 +123,11 @@ async function scrapeSecondary(item,page)
        
        
            const size = elem.attributes.attribute_pa_size;
-           let colors = elem.attributes.attribute_pa_color;
+           let color = elem.attributes.attribute_pa_color;
 
-           if(colors == undefined)
+           if(color == undefined)
            {
-                colors = "";
+                color = "";
            }
        
            const position = index;
@@ -143,16 +143,16 @@ async function scrapeSecondary(item,page)
            }
 
        
-           return{id,sku,price,size,colors,position,available, compare_at_price};
+           return{id,sku,price,size,color,position,available, compare_at_price};
             
         });
     
         //images
         item[i].images = $('.woocommerce-product-gallery__image').map((index,element) =>{
             
-            const src = $(element).find("a").find("img").attr("src");
-            const width = $(element).find("a").find("img").attr("width");
-            const height = $(element).find("a").find("img").attr("height");
+            const src = $(element).find("a").find("img").attr("data-large_image");
+            const width = $(element).find("a").find("img").attr("data-large_image_width");
+            const height = $(element).find("a").find("img").attr("data-large_image_height");
             const position = index + 1;
        
             return{src,height,width,position};
@@ -227,7 +227,7 @@ async function main()
     const items_info = await scrapeSecondary(shoes_title_and_url,page);
     const data = JSON.stringify(items_info);
 
-    await writeJSOn("wearabouts.json",data);
+    await writeJSOn("WooCommerceScrapers/wearabouts.json",data);
 
 }
 

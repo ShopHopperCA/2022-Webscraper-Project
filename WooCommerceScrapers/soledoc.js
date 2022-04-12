@@ -2,17 +2,18 @@ const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const fs = require('fs');
 
-const url = "https://amniapparel.com/shopnow/";
+const url = "https://www.soledoc.ca/product-category/womens-sandals";
 let finalres = new Array();
 
 async function scrapeMain(page) {
     
     let result;
-
+    
     //get last page
     let end_page;
     end_page = await get_pagination_end(url,page);
     await sleep(1000);
+  
     //pagination loop
     for(let i = 1; i <= end_page; i++){
       
@@ -21,20 +22,20 @@ async function scrapeMain(page) {
     const $ = await cheerio.load(html);
       
     result = $('.product-type-variable').map((index,element) =>{
-
-        const titleElement = $(element).find(".woocommerce-loop-product__title");
-        const urlElement = $(element).find(".woocommerce-loop-product__link");
         
-        const id = $(element).attr("class").split(" ")[2].split("-")[1];
+        const titleElement = $(element).find('.gridview').find(".woocommerce-loop-product__title");
+        const urlElement = $(element).find('.gridview').find(".woocommerce-loop-product__link");
+        
+        const id = $(element).attr("class").split(" ")[6].split("-")[1];;
         const title = titleElement.text();
-        const business_name = $("title").text().split("|")[1].trim(); 
+        const business_name = $("title").text().split("-")[1].trim(); 
         const url = urlElement.attr('href');
-        
-        return{id,title,business_name,url};
+        const vendor = business_name;
+        return{id,title,business_name,url,vendor};
     }).get();
         finalres.push(result);
     }
-
+  
   finalres = finalres.flat();
   return finalres;
 }
@@ -50,72 +51,61 @@ async function scrapeSecondary(item,page)
         const $ = await cheerio.load(html);
         await sleep(1000);
 
-        //vendor
-        item[i].vendor = $(".woocommerce-product-attributes-item--attribute_pa_brands").find('.woocommerce-product-attributes-item__value').text();
-
         //scrape tags
-        let tags = [];
-        $(".tagged_as").find('a').each((index,element) => 
-        {
-            const tag = $(element).text()
-            tags.push(tag);
-        });
-        //insert tags into JSON
-        item[i].tags = tags;
+        
       
         //variant
         const v = JSON.parse($(".cart").attr("data-product_variations"));
         let index = 1;
         item[i].variants = Object.values(v).map(elem => {
-            const id = elem.variation_id;
-            const sku = elem.sku;
-            let price = elem.display_price.toString().replace(".","");
+           const id = elem.variation_id;
+           //const sku = elem.sku;
+           //const grams = elem.weight;
+           let price = elem.display_price.toString().replace(".","");
             
-            if(elem.display_price.toString().indexOf(".") == -1)
-            {
- 
-                 price = price + "00";
-            }
-        
-            const size = elem.attributes.attribute_pa_size;
-            let color = elem.attributes.attribute_pa_color;
- 
-            if(color == undefined)
-            {
-                 color = "";
-            }
-        
-            const position = index;
-             index++;
-        
-            const available = elem.is_in_stock;
-            let compare_at_price = elem.display_regular_price.toString().replace(".","");
+           if(elem.display_price.toString().indexOf(".") == -1)
+           {
 
-            if(elem.display_regular_price.toString().indexOf(".") == -1)
-            {
- 
-                compare_at_price = compare_at_price + "00";
-            }
- 
-        
-            return{id,sku,price,size,color,position, available, compare_at_price};
-             
-         });
-                
-        //images
-        item[i].images = $('.woocommerce-product-gallery__image').map((index,element) =>{
+                price = price + "00";
+           }
+       
+           const size = elem.attributes['attribute_pa_women-size'];
+           let color = elem.attributes.attribute_pa_color;
+
+           if(color == undefined)
+           {
+                color = "";
+           }
+       
+           const position = index;
+            index++;
+       
+           const available = elem.is_in_stock;
+           let compare_at_price = elem.display_regular_price.toString().replace(".","");
+
+           if(elem.display_regular_price.toString().indexOf(".") == -1)
+           {
+
+               compare_at_price = compare_at_price + "00";
+           }
+
+       
+           return{id,price,size,color,position,available, compare_at_price};
             
-            const src = $(element).find("a").find("img").attr("src");
-            const width = $(element).find("a").find("img").attr("width");
-            const height = $(element).find("a").find("img").attr("height");
+        });
+    
+        //images
+        item[i].images = $('.zoom').map((index,element) =>{
+            
+            const src = $(element).find("a").attr('href');
             const position = index + 1;
        
-            return{src,height,width,position};
+            return{src,position};
         }).get();
       
       
     //body html
-    item[i].body_html = $(".et_pb_wc_description_0_tb_body").find('.et_pb_module_inner').html();
+    item[i].body_html = $(".woocommerce-Tabs-panel--description").html();
       
     //product_type
      let categories = [];
@@ -129,20 +119,24 @@ async function scrapeSecondary(item,page)
 
     //colors
     item[i].colors = $('.woocommerce-product-attributes-item--attribute_pa_color').find('.woocommerce-product-attributes-item__value').text().trim().split(',');
- 
-    //price
-    item[i].compare_at_price = $('.et_pb_wc_price_0_tb_body > div > p > span').find('bdi').text().replace('$','').replace('.','');
+    
+    //if color is empty set solors to empty array
+    if(item[i].colors[0] == "")
+    {
+        item[i].colors = [];
+    }
 
+    //price
+    item[i].compare_at_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > span > bdi').text().replace('$','').replace('.','');
     item[i].original_price = item[i].compare_at_price;
 
     if(item[i].original_price.length == 0)
     {
-        item[i].original_price = $('.et_pb_wc_price_0_tb_body > div > p > ins > span').find('bdi').text().replace('$','').replace('.','');
-        item[i].compare_at_price = $('.et_pb_wc_price_0_tb_body > div > p > del > span').find('bdi').text().replace('$','').replace('.','');
+        item[i].original_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > ins > span > bdi').text().replace('$','').replace('.','');
+        item[i].compare_at_price = $('div.col-12.col-lg-6.col-xl-7 > div > p > del > span > bdi').text().replace('$','').replace('.','');
     }
-         
+      
     }
-    
     return item;
 }
 
@@ -156,14 +150,13 @@ async function main()
 
     const data = JSON.stringify(item_info);
 
-    await writeJSOn("amni_apparel.json",data);
-
+    await writeJSOn("WooCommerceScrapers/soledoc.json",data);
 }
 
 main();
 
 
-
+//-------------------------------utility functions---------------------//
 //limit number of requests
 async function sleep(miliseconds)
 {

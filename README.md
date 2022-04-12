@@ -36,7 +36,7 @@ AlpacaScraper: index,js – scrapes Alpaca Clothing Canada.
 
 WixScrapers: index.js – scrapes Floral Fawn Boutique and Stone Fox Clothing.
 
-lightspeed-api: index.js – scrapes The Artful Hand, ONE Boardshop, Strut Footwear & Apparel, Honest Boutique, Envy Apparel, Attridge Snow Ski Wake, and Fossellos.
+Lightspeed: index.js – scrapes The Artful Hand, ONE Boardshop, Strut Footwear & Apparel, Honest Boutique, Envy Apparel, Attridge Snow Ski Wake, and Fossellos.
 
 MostWantedAPI: index.js - scrapes Most Wanted Resale.
 

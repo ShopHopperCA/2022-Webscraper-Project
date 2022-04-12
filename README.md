@@ -15,10 +15,10 @@ Assuming there are no APIs found the first step is to find out how many pages we
 Step 3: Main page inspection
 Continue to inspect the HTML of the main page listing all of the products using google developer tools. Look for the individual products title, URL and product id. Once you have found the HTML tags containing title, URL and product id then you can begin to inspect them and create jQuery selectors to extract the data. For business name it will likely be easiest to extract it from the title tag from the HTML. To inspect the title tag press crtl+U to open the pages HTML and then find the tag. Inspect the tag and create a jQuery selector to extract the business name. Then map all of the extracted data into a JSON object.
 
-Step 3: Individual product page inspection
+Step 4: Individual product page inspection
 Next inspect individual product pages inspect using google developer tools once again. Another way to find any tags you are for is looking through the HTML using ctrl+U searching for keywords like variant, brand, or anything that you can’t find in the initial. Find all of the needed tags and create the jQuery selectors to extract the data from each HTML tag. Create a loop to loop through the current JSON array created in the last step, go to each product URL and use the jQuery selectors to get the data needed for each product. Check many different individual product pages to look for any special cases needed to be accounted for. Then insert all of the extracted data into the JSON array at the index in the loop.
 
-Step 4: Output and inspect JSON
+Step 5: Output and inspect JSON
 Then output the JSON array that has been created. Inspect the JSON closely to look for any potential issues. Utility functions made need to be created to eliminate duplicates, or help with any other potential problems that are found.
 
 # ShopHopper Webscrapers
@@ -26,21 +26,21 @@ Then output the JSON array that has been created. Inspect the JSON closely to lo
 For the Implementation of the web scrapers, 20 websites were scraped to get product data. Of the 20 websites there were 7 Lightspeed websites, 4 WooCommerce websites, 3 Wix websites, 3 Square websites, 2 Weebly websites, and 1 BigCommerce website.
 
 # Folders 
-WooCommerceScrapers, AlpacaScraper, WixScrapers, lightspeed-api, MostWantedAPI, SquareAndWeebly
+WooCommerceScrapers, AlpacaScraper, WixScrapers, Lightspeed, MostWantedAPI, SquareAndWeebly
 
 # Files 
 
-WooCommerceScrapers: amni_apparel.js – scrapes Amni Apparel, wearabouts.js – scrapes Wearabouts Clothing Co., naughtygirlessential.js – scrapes Naugty Girl Essentials Lingerie, and soledoc.js – scrapes Soledoc.
+**WooCommerceScrapers:** amni_apparel.js – scrapes Amni Apparel, wearabouts.js – scrapes Wearabouts Clothing Co., naughtygirlessential.js – scrapes Naugty Girl Essentials Lingerie, and soledoc.js – scrapes Soledoc.
 
-AlpacaScraper: index,js – scrapes Alpaca Clothing Canada.
+**AlpacaScraper:** index,js – scrapes Alpaca Clothing Canada.
 
-WixScrapers: index.js – scrapes Floral Fawn Boutique and Stone Fox Clothing.
+**WixScrapers:** index.js – scrapes Floral Fawn Boutique and Stone Fox Clothing.
 
-Lightspeed: index.js – scrapes The Artful Hand, ONE Boardshop, Strut Footwear & Apparel, Honest Boutique, Envy Apparel, Attridge Snow Ski Wake, and Fossellos.
+**Lightspeed:** index.js – scrapes The Artful Hand, ONE Boardshop, Strut Footwear & Apparel, Honest Boutique, Envy Apparel, Attridge Snow Ski Wake, and Fossellos.
 
-MostWantedAPI: index.js - scrapes Most Wanted Resale.
+**MostWantedAPI:** index.js - scrapes Most Wanted Resale.
 
-SquareAndWeebly: index.js – scrapes Morgane, Tigerlily Fashions Clothing, Sassy Shoes, Kaleco Sustainable Lifestyle, and Okanagan Skate Co. 
+**SquareAndWeebly:** index.js – scrapes Morgane, Tigerlily Fashions Clothing, Sassy Shoes, Kaleco Sustainable Lifestyle, and Okanagan Skate Co. 
 
 There is also a corresponding JSON output file for each scraper file, and a readme file in each folder that acts as both a starting point and a handy reference that explains the Scrapers structures.
 
@@ -50,15 +50,15 @@ There is also a corresponding JSON output file for each scraper file, and a read
 3. Execute node filename.js to run the scraper in the terminal.
 
 # Feedback Guide
-Mid-Execution/How the Scrapers Work
-WooCommerce, Alpaca, and Wix Scrapers: 
+### Mid-Execution/How the Scrapers Work<br />
+WooCommerce, Alpaca, and Wix Scrapers: <br /> 
 Puppeteer, an automated browser visits the targeted website and gets product URLs and titles, then the individual product pages are visited to scrape more detailed information about each product. Cheerio is used to extract data from the web pages.
 
-LightSpeed API: 
-URL: This is the base URL that is currently being parsed. 
-After URL: are all the individual .ajax product URLs that are scraped from that URL.
+LightSpeed API: <br /> 
+URL: This is the base URL that is currently being parsed. <br /> 
+After URL: are all the individual .ajax product URLs that are scraped from that URL.<br /> 
 
-Square and Weebly API:
+Square and Weebly API:<br /> 
 Square and Weebly based-sites dispose of a callable API that is used then used to populate the site. There are many API calls that can be observed through the networks tab in the Developers Tool console. The content-type for both of these calls is: application/json. 
 
 As a preamble it’s good practice to double-check whether the Square or Weebly site allows for the response to be shared publicly, we can usually check this through the Networks Tab on the Developer Console through the “Access-Control-Allow-Origin” HTTP header, see the example below to get an idea. NOTE: There might be other important HTTP headers that allows for the information to be fetched, this was consistent across all the Square and Weebly sites scraped
@@ -73,13 +73,13 @@ The following information is needed in order to be able to scrape:
 •	productCall = this is the specific product call needed to scrape the few remaining data points
 Once all of these have been determined the templates are used to extract the data.
 
-Most Wanted Resale API: 
+Most Wanted Resale API: <br /> 
 Uses Puppeteer to visit a webpage and then scrape product URLs and titles using Cheerio. URLs are modified to .js files and then node-fetch is used to get extract data from each URL.
 
 # Post Execution/Outputs
-For LightSpeed, after execution, a small part of the results will be displayed in the terminal, as well as the number of items scraped and the execution time in milliseconds.
-Weebly and Square also output how many items from each website have been scraped in the terminal.
-The full output of the scrapers is written in the corresponding .json file in each folder.
+For LightSpeed, after execution, a small part of the results will be displayed in the terminal, as well as the number of items scraped and the execution time in milliseconds.<br /> 
+Weebly and Square also output how many items from each website have been scraped in the terminal.<br /> 
+The full output of the scrapers is written in the corresponding .json file in each folder.<br /> 
 
 # Packages and Versions
 cheerio - ^1.0.0-rc.10

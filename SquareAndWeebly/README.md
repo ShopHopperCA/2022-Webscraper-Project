@@ -29,7 +29,7 @@ For the creation of these specifics scrapers we are mostly interested in **2-3**
 
 The content-type for both of these calls is: **application/json**
 
-Here is a preview on how the "All products call" looks like on the developers tool, for this example we would see at Kaleco's "All products call":
+Here is a preview on how the "All products call" looks like on the developers tool, for this example we will see at Kaleco's "All products call":
 
 ![img.png](READMEimages/img.png)
 

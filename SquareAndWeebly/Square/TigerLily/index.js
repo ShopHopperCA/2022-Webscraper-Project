@@ -62,14 +62,14 @@ const main = async (urlCall) =>{
     Promise.all(data).then(
         value => {
             for(var i =0; i < value.length; i++){
-               // console.log(chalk.green('This is item number: ') + chalk.blue(i));
+                //console.log(chalk.green('This is item number: ') + chalk.blue(i));
                 for(v in value[i]){
                     // if(v == 'images' || v == 'IMAGES'){
                     //     console.log(v);
                     //     for(prop in value[i]['images'])
                     //         console.log(value[i]['images'][prop])
                     // }
-                   // console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);
+                    //console.log(chalk.red(v.toUpperCase()) + ": " + value[i][v]);
                 }
                 try {
                     fs.writeFileSync('./tigerLily.json', JSON.stringify(value, null, 4));
@@ -190,4 +190,4 @@ let test = getId('product/summer-a-line-dress/2')
 
 module.exports={main,baseURL,count};
 
-//main(baseUrl);
+//main(baseURL);

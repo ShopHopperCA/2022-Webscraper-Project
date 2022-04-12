@@ -51,14 +51,14 @@ There is also a corresponding JSON output file for each scraper file, and a read
 
 # Feedback Guide
 ### Mid-Execution/How the Scrapers Work<br />
-WooCommerce, Alpaca, and Wix Scrapers: <br /> 
+**WooCommerce, Alpaca, and Wix Scrapers:** <br /> 
 Puppeteer, an automated browser visits the targeted website and gets product URLs and titles, then the individual product pages are visited to scrape more detailed information about each product. Cheerio is used to extract data from the web pages.
 
-LightSpeed API: <br /> 
+**LightSpeed API:** <br /> 
 URL: This is the base URL that is currently being parsed. <br /> 
 After URL: are all the individual .ajax product URLs that are scraped from that URL.<br /> 
 
-Square and Weebly API:<br /> 
+**Square and Weebly API:**<br /> 
 Square and Weebly based-sites dispose of a callable API that is used then used to populate the site. There are many API calls that can be observed through the networks tab in the Developers Tool console. The content-type for both of these calls is: application/json. 
 
 As a preamble it’s good practice to double-check whether the Square or Weebly site allows for the response to be shared publicly, we can usually check this through the Networks Tab on the Developer Console through the “Access-Control-Allow-Origin” HTTP header, see the example below to get an idea. NOTE: There might be other important HTTP headers that allows for the information to be fetched, this was consistent across all the Square and Weebly sites scraped
@@ -73,7 +73,7 @@ The following information is needed in order to be able to scrape:
 •	productCall = this is the specific product call needed to scrape the few remaining data points
 Once all of these have been determined the templates are used to extract the data.
 
-Most Wanted Resale API: <br /> 
+**Most Wanted Resale API:** <br /> 
 Uses Puppeteer to visit a webpage and then scrape product URLs and titles using Cheerio. URLs are modified to .js files and then node-fetch is used to get extract data from each URL.
 
 # Post Execution/Outputs

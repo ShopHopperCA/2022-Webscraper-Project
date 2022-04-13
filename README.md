@@ -44,7 +44,7 @@ WooCommerceScrapers, AlpacaScraper, WixScrapers, Lightspeed, MostWantedAPI, Squa
 
 There is also a corresponding JSON output file for each scraper file, and a readme file in each folder that acts as both a starting point and a handy reference that explains the Scrapers structures.
 
-# Instructuions to run scrapers
+# Instructions to run scrapers
 1. Go to root folder in terminal and execute npm install to install all required packages and libraries. This can be done by running “npm install puppeteer@11 node-fetch@2 request request-promise axios cheerio”.
 2. Change directory to the targeted folder using cd FolderName. Or execute using node FolderName/filename.js in the terminal.
 3. Execute node filename.js to run the scraper in the terminal.

@@ -59,6 +59,7 @@
     "pump": "^3.0.0",
     "puppeteer": "^11.0.0",
     "readable-stream": "^3.6.0",
+    "request-promise": "^4.2.6",
     "rimraf": "^3.0.2",
     "safe-buffer": "^5.2.1",
     "string_decoder": "^1.3.0",

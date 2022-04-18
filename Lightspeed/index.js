@@ -10,13 +10,11 @@ get[Datapoint] - Each of these functions returns [Datapoint] from the .ajax site
 
 */
 
-const request = require('request-promise');
-const cheerio = require('cheerio');
 const fetch = require('node-fetch');
 fs = require('fs');
 
 const so = require('./site_objects');
-const url_scraper = require('./product_url_scrapper');
+const url_scraper = require('./product_url_scraper');
 
 const result = [];
 const product_urls = [];

@@ -88,10 +88,11 @@ async function getVariants(productJson) {
             let variantSize;
             let sizeString;
         
-            title = title.split(',');
-            sizeString = title[0].replace('"', '').replace('\"', '');
-
-            variantSize = sizeString.substring(sizeString.indexOf(' ') + 1)
+            // title = title.split(',');
+            
+            variantSize = title.substring(title.indexOf('S') + 6)
+            
+            variantSize = variantSize.replace('"', '').replace('\"', '');
             return variantSize;
         }
         

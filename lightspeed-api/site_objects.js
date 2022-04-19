@@ -63,7 +63,7 @@ const SITE_OBJECTS = [
         bodyHtmlSelector : ".tabs-a"
 
     },
-
+  
     ONE_BOARD = {
         baseUrl : [
             "https://www.oneboardshop.com/snow/womens-outerwear/womens-jackets/",
@@ -83,6 +83,7 @@ const SITE_OBJECTS = [
         bodyHtmlSelector : ".product-content",
         removeNodes : [".cf"],
     },
+  
     ATTRIDGE = {
         baseUrl : [
             "https://www.attridge.ca/women/womens-tops/",

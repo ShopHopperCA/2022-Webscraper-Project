@@ -60,7 +60,7 @@ async function main() {
     await console.log("Number of items scraped: " + result.length);
 
     //Write to output file
-    fs.writeFileSync('./outputJson.json', JSON.stringify(result, null, 4));
+    fs.writeFileSync('./lightspeedOutputJson.json', JSON.stringify(result, null, 4));
     console.timeEnd("execution");
 }
 
@@ -95,7 +95,7 @@ async function getVariants(productJson) {
             variantSize = variantSize.replace('"', '').replace('\"', '');
             return variantSize;
         }
-        ``
+        
         await Object.keys(productJson['variants']).forEach(async key => cleanVariants.push({
             id : key,
             sku : productJson['variants'][key]['sku'],
@@ -122,7 +122,21 @@ async function getTags(productJson) {
 }
 
 async function getImages(productJson) {
-    return productJson['images']
+    let images = productJson['images'];
+    let finalImages = [];
+    let finalImage = "";
+
+    images.forEach(async image => {
+        imageSplit = await image.split('/')
+        imageSplit[7] = '500x500x2'
+        image = imageSplit.toString();
+
+        finalImage = imageSplit.toString().split(',').join('/');
+        
+        finalImages.push(finalImage);
+    })
+
+    return finalImages;
 }
 
 async function getPrice(productJson) {

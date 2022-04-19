@@ -10,6 +10,7 @@ It will then loop through each page related to the base url, scraping all produc
 
 removeNodes(page$, nodes) - This function takes in an array of nodes that are deleted from the page at the beginning of the outer for loop execution. 
 Its purpose is to remove any any HTML elements that may be a part of the product list but do not have a link to a product page.
+
 */
 
 const request = require('request-promise');
@@ -29,15 +30,14 @@ async function scrapeProductUrls(site) {
     const product_urls = [];
 
     for(var urlIndex = 0; urlIndex < site.baseUrl.length; urlIndex++) {
-        console.log(urlIndex);
         const html = await request.get(site.baseUrl[urlIndex]);
         const $ = await cheerio.load(html)
-        console.log("urlIndex: " + urlIndex)
+        console.log("\nURL: " + site.baseUrl[urlIndex] + '\n_________________________________________________________');
         
         let paginationEnd;
         let productUrl;
         let productElement;
-        
+        let productLoop = 0;        
         /*
             Check if paginationSelector is a string, if so, check if the element exists. If true, get the last number in pagination list, if false, paginationEnd = 1.
             If paginationSelector is a number, paginationEnd = paginationSelector.
@@ -60,6 +60,8 @@ async function scrapeProductUrls(site) {
         }
     
         for(var i = 1; i <= paginationEnd; i++) {
+            if(productLoop >= 5) break;
+
             await sleep(1000);
             let productItemSelector = "";
             pageUrl = site.baseUrl[urlIndex] + 'page' + i + '.html';
@@ -74,18 +76,25 @@ async function scrapeProductUrls(site) {
             
 
             productListLength = await page$(site.productListSelector).children(productItemSelector).length;
+
+            if(productListLength == 0) continue;
             
             for(var j = 0; j < productListLength; j++) {
                     productElement = await page$(site.productListSelector).children().eq(j);
                     productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
-                    console.log(productUrl);
+                    
                     let html = await scrapeBodyHtml(productUrl, site);
                     body_html[productUrl] = html;
                     
                     productUrl = productUrl.replace('.html', '.ajax');
+                    
+                    if(product_urls.includes(productUrl)){
+                        productLoop++;
+                        break;
+                    }
+
                     console.log(productUrl);
-                    
-                    
+
                     product_urls.push(productUrl);
                     
             }
@@ -94,6 +103,8 @@ async function scrapeProductUrls(site) {
     
     return product_urls;
 }
+
+/* UTILITY FUNCTIONS */
 
 async function removeNodes(page$, nodes) {
     nodes.forEach(element => {
@@ -104,23 +115,16 @@ async function removeNodes(page$, nodes) {
 async function scrapeBodyHtml(productUrl, site) {
     const html = await request.get(productUrl);
     const $ = await cheerio.load(html);
-    let bodyHtml;
 
-    try {
-        bodyHtml = $(site.bodyHtmlSelector).prop('outerHTML');
-    } catch (e) {
-        console.log(e);
-        bodyHtml = "";
-    }
-
+    let bodyHtml = await $(site.bodyHtmlSelector).prop('outerHTML');
     return bodyHtml;
 }
-/* UTILITY FUNCTIONS */
 
 //Stops the program for a specified number of seconds
 async function sleep(miliseconds)
 {
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 }
+
 
 module.exports = {scrapeProductUrls: scrapeProductUrls, body_html}

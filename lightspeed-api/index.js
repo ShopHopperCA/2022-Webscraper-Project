@@ -125,18 +125,21 @@ async function getImages(productJson) {
     let images = productJson['images'];
     let finalImages = [];
     let finalImage = "";
+    try {
+        images.forEach(async image => {
+            imageSplit = await image.split('/')
+            imageSplit[7] = '500x500x2'
+            image = imageSplit.toString();
 
-    images.forEach(async image => {
-        imageSplit = await image.split('/')
-        imageSplit[7] = '500x500x2'
-        image = imageSplit.toString();
+            finalImage = imageSplit.toString().split(',').join('/');
+            
+            finalImages.push(finalImage);
+        })
 
-        finalImage = imageSplit.toString().split(',').join('/');
-        
-        finalImages.push(finalImage);
-    })
-
-    return finalImages;
+        return finalImages;
+    } catch (err) {
+        console.log("Error getting images")
+    }
 }
 
 async function getPrice(productJson) {
@@ -152,7 +155,7 @@ async function getCompareAtPrice(productJson) {
         comparePriceString = comparePriceString.replace('.', '');
 
         return comparePriceString;
-    } catch (e) {
+    } catch (err) {
         return;
     }
 }

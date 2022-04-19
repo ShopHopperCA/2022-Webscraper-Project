@@ -57,6 +57,7 @@ async function scrapeProductUrls(site) {
                 throw "Invalid pagination"
         } catch(err) {
             console.log("Please enter a valid pagination value (Selector or Integer)");
+            break;
         }
     
         for(var i = 1; i <= paginationEnd; i++) {
@@ -65,28 +66,53 @@ async function scrapeProductUrls(site) {
             await sleep(1000);
             let productItemSelector = "";
             pageUrl = site.baseUrl[urlIndex] + 'page' + i + '.html';
-            pageHtml = await request.get(pageUrl);
-            page$ = cheerio.load(pageHtml);
-    
+            try {
+                pageHtml = await request.get(pageUrl);
+                page$ = cheerio.load(pageHtml);
+            } catch(err) {
+                console.log("Page HTML could not be loaded, please check site status or URL")
+                break;
+            }
+                
             if(site.removeNodes) 
                 removeNodes(page$, site.removeNodes);
             
             if(site.productItemSelector) 
                 productItemSelector = site.productItemSelector
             
+            try {
+                productListLength = await page$(site.productListSelector).children(productItemSelector).length;
+            } catch (err) {
+                console.log("productListLength could not be found. Please check site status or CSS selectors.")
+                break;
+            }
 
-            productListLength = await page$(site.productListSelector).children(productItemSelector).length;
-
-            if(productListLength == 0) continue;
+            if(productListLength == 0) break;
             
             for(var j = 0; j < productListLength; j++) {
-                    productElement = await page$(site.productListSelector).children().eq(j);
-                    productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
+                    try {
+                        productElement = await page$(site.productListSelector).children().eq(j);
+                    } catch (err) {
+                        console.log("Could not get productElement. Please check site status or CSS selectors.")
+                        break;
+                    }
+
+                    try {
+                        productUrl = await page$(productElement).find(site.productLinkSelector).attr('href');
+                    } catch (err) {
+                        console.log("Could not get productUrl. Please check site status or CSS selectors.")
+                        break;
+                    }
                     
                     let html = await scrapeBodyHtml(productUrl, site);
                     body_html[productUrl] = html;
                     
-                    productUrl = productUrl.replace('.html', '.ajax');
+                    try {
+                        productUrl = productUrl.replace('.html', '.ajax');
+                    } catch (err) {
+                        console.log("productUrl is null. Please check site status or CSS selectors")
+                        break;
+                    }
                     
                     if(product_urls.includes(productUrl)){
                         productLoop++;
@@ -108,16 +134,24 @@ async function scrapeProductUrls(site) {
 
 async function removeNodes(page$, nodes) {
     nodes.forEach(element => {
-        page$(element).remove();
+        try {    
+            page$(element).remove();
+        } catch (err) {
+            console.log("HTML Element could not be removed")
+        }
     });
 }
 
 async function scrapeBodyHtml(productUrl, site) {
-    const html = await request.get(productUrl);
-    const $ = await cheerio.load(html);
+    try {
+        const html = await request.get(productUrl);
+        const $ = await cheerio.load(html);
 
-    let bodyHtml = await $(site.bodyHtmlSelector).prop('outerHTML');
-    return bodyHtml;
+        let bodyHtml = await $(site.bodyHtmlSelector).prop('outerHTML');
+        return bodyHtml;
+    } catch (err) {
+        console.log("body_html could not be scraped. Please check site status or CSS selectors")
+    }
 }
 
 //Stops the program for a specified number of seconds

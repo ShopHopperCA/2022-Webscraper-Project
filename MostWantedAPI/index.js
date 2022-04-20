@@ -107,7 +107,7 @@ async function extract(page)
 
          
          const data = JSON.stringify(final);
-         await writeJSOn("MostedWantedAPI/mostwantedresale.json",data);
+         await writeJSOn("./mostwantedresale.json",data);
          return final;
     
 }

@@ -172,7 +172,7 @@ async function main()
     const cleaned_info = await removeDuplicates(products_info);
     const data = JSON.stringify(cleaned_info);
 
-    await writeJSOn("WooCommerceScrapers/nge.json",data);
+    await writeJSOn("./nge.json",data);
   
 }
 

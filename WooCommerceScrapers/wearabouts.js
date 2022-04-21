@@ -227,7 +227,7 @@ async function main()
     const items_info = await scrapeSecondary(shoes_title_and_url,page);
     const data = JSON.stringify(items_info);
 
-    await writeJSOn("WooCommerceScrapers/wearabouts.json",data);
+    await writeJSOn("./wearabouts.json",data);
 
 }
 

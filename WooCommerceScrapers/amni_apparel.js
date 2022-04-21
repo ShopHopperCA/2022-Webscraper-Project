@@ -156,7 +156,7 @@ async function main()
 
     const data = JSON.stringify(item_info);
 
-    await writeJSOn("WooCommerceScrapers/amni_apparel.json",data);
+    await writeJSOn("./amni_apparel.json",data);
 
 }
 

@@ -154,7 +154,7 @@ async function main()
 
     const data_s = JSON.stringify(cleaned_info);
 
-    await writeJSOn("WixScrapers/wixData.json",data_s);
+    await writeJSOn("./wixData.json",data_s);
 }
 
 main();

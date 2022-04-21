@@ -150,7 +150,7 @@ async function main()
 
     const data = JSON.stringify(item_info);
 
-    await writeJSOn("WooCommerceScrapers/soledoc.json",data);
+    await writeJSOn("./soledoc.json",data);
 }
 
 main();
